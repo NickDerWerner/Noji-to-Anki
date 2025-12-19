@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Noji Data & Output
+*.ofc
+anki_*/
+temp_work/
+
+# OS
+.DS_Store
