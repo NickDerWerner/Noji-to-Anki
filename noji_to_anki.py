@@ -116,7 +116,9 @@ def process_noji_ofc(input_path, output_dir):
                 if p_id and p_id.isdigit() and int(p_id) in deck_map:
                     path_names.append(deck_map[int(p_id)])
             path_names.append(deck['name'])
-            return "::".join(path_names)
+            # Anki trims spaces around deck names. Untrimmed names make its
+            # text import create a new deck for every card ("Deck+", "Deck++", ...)
+            return "::".join(name.strip() for name in path_names)
 
         output_rows = []
         media_urls = {}
@@ -140,7 +142,12 @@ def process_noji_ofc(input_path, output_dir):
                         else:
                             back += f"<br>{img_tag}"
                 
-                output_rows.append(f"{front}\t{back}\t{full_name}")
+                output_rows.append((full_name, f"{front}\t{back}\t{full_name}"))
+
+        # Parent decks must come before their sub-decks, otherwise Anki's
+        # text import duplicates the parent ("Deck+") for cards stored in it
+        output_rows.sort(key=lambda row: row[0].count('::'))
+        output_rows = [row for _, row in output_rows]
 
         base_name = os.path.basename(input_path.rstrip('/'))
         if base_name.lower().endswith('.ofc'):

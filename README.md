@@ -114,6 +114,9 @@ For images to display, you must move the contents of the `attachments` folder in
 *   At the end, the script prints `Images: X of Y ready`. If some are missing, it downloads them from Noji automatically (this needs an internet connection). Images that still fail are listed in a warning.
 *   Make sure you copied the files from the `attachments` folder that the script created. Each card points to a file name like `c4915ef6-44f7-468f-8c82-eff8ba8a41a5.jpg`, and that exact file must be in `collection.media`. Files with other names (for example `409095344.jpg`) come from a different import and won't work for these cards.
 
+### Lots of extra decks named `Deck+`, `Deck++`, ... appeared in Anki
+Older versions of the converter caused this for some decks. Delete the imported decks in Anki, convert your `.ofc` again with the current version, and import the new file.
+
 ## 📁 Repository Structure
 *   `noji_to_anki.py`: The main conversion script.
 *   `prepend_label.py`: Optional helper that adds a label to the front of every card.
