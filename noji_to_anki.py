@@ -73,17 +73,7 @@ def process_noji_ofc(input_path, output_dir):
             print("Error: Could not find deck_export_data or deck_data.json in the provided path.")
             return
 
-        # 4. Extract/Merge attachments
-        # Re-check attachments_zip in the folder where data was found
-        if not attachments_zip:
-             attachments_zip = os.path.join(work_dir, 'attachments.zip')
-
-        if os.path.exists(attachments_zip):
-            print("Extracting/Merging attachments...")
-            with zipfile.ZipFile(attachments_zip, 'r') as zip_ref:
-                zip_ref.extractall(anki_attachments_dir)
-        
-        # 5. Generate Anki TSV
+        # 4. Generate Anki TSV
         print("Generating Anki import file...")
         with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -132,6 +122,20 @@ def process_noji_ofc(input_path, output_dir):
             f.write("#separator:tab\n#html:true\n#deck column:3\n")
             for row in output_rows:
                 f.write(row + '\n')
+
+        # 5. Extract only the images the cards use
+        # Re-check attachments_zip in the folder where data was found
+        if not attachments_zip:
+             attachments_zip = os.path.join(work_dir, 'attachments.zip')
+
+        if os.path.exists(attachments_zip):
+            print("Extracting attachments...")
+            with zipfile.ZipFile(attachments_zip, 'r') as zip_ref:
+                for entry in zip_ref.namelist():
+                    filename = os.path.basename(entry)
+                    if filename in media_urls and not entry.startswith('__MACOSX/'):
+                        with open(os.path.join(anki_attachments_dir, filename), 'wb') as f:
+                            f.write(zip_ref.read(entry))
 
         # 6. Download images that are missing from the export
         failed = []

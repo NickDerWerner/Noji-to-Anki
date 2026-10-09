@@ -66,6 +66,13 @@ The Noji data is compressed using Zstandard (`zstd`). You must install this tool
     (don't forget the quotes "" around the filename!)
 3.  A new folder named `anki_your_deck_name` will be created.
 
+### Optional: Add a label to every card
+If you want each card to show which subject it belongs to (e.g. "Sachenrecht: What is ownership?"), run this after the converter:
+```bash
+python3 prepend_label.py "anki_your_deck_name/anki_import_your_deck_name.ofc.txt" "Sachenrecht: "
+```
+Running it twice won't add the label twice.
+
 ## 📥 Importing into Anki
 
 ### 1. Import the Cards
@@ -99,6 +106,7 @@ For images to display, you must move the contents of the `attachments` folder in
 
 ## 📁 Repository Structure
 *   `noji_to_anki.py`: The main conversion script.
+*   `prepend_label.py`: Optional helper that adds a label to the front of every card.
 *   `README.md`: This instruction guide.
 
 ## ❗️Tipps❗️
