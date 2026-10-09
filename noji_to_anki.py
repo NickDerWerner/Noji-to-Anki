@@ -5,6 +5,7 @@ import subprocess
 import shutil
 import sys
 import argparse
+import urllib.request
 
 def clean_html(text):
     if not text:
@@ -101,6 +102,7 @@ def process_noji_ofc(input_path, output_dir):
             return "::".join(path_names)
 
         output_rows = []
+        media_urls = {}
         for deck in data:
             full_name = get_full_deck_name(deck)
             for note in deck.get('notes', []):
@@ -114,6 +116,7 @@ def process_noji_ofc(input_path, output_dir):
                     url = att_wrapper.get('attachment', {}).get('media_file', {}).get('url')
                     if url:
                         filename = extract_filename(url)
+                        media_urls[filename] = url
                         img_tag = f'<img src="{filename}">'
                         if field_name == 'front_side':
                             front += f"<br>{img_tag}"
@@ -130,10 +133,35 @@ def process_noji_ofc(input_path, output_dir):
             for row in output_rows:
                 f.write(row + '\n')
 
+        # 6. Download images that are missing from the export
+        failed = []
+        missing = {f: u for f, u in media_urls.items()
+                   if not os.path.exists(os.path.join(anki_attachments_dir, f))}
+        if missing:
+            print(f"Downloading {len(missing)} images that are missing from the export...")
+            for filename, url in missing.items():
+                try:
+                    request = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                    with urllib.request.urlopen(request, timeout=30) as response:
+                        content = response.read()
+                    with open(os.path.join(anki_attachments_dir, filename), 'wb') as f:
+                        f.write(content)
+                except Exception as e:
+                    failed.append((filename, e))
+
         print(f"\nSuccess!")
         print(f"Anki file: {anki_file_path}")
         print(f"Attachments: {anki_attachments_dir}")
         print(f"Total cards: {len(output_rows)}")
+        print(f"Images: {len(media_urls) - len(failed)} of {len(media_urls)} ready")
+        if failed:
+            print(f"\nWarning: {len(failed)} images could not be downloaded:")
+            for filename, e in failed[:5]:
+                print(f"  {filename}: {e}")
+            if len(failed) > 5:
+                print(f"  ...and {len(failed) - 5} more")
+            if any('CERTIFICATE_VERIFY_FAILED' in str(e) for _, e in failed):
+                print("On macOS, run 'Install Certificates.command' from your Python folder in Applications, then try again.")
 
     except Exception as e:
         print(f"An error occurred: {e}")
