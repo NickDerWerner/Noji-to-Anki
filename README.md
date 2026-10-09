@@ -11,14 +11,14 @@ Convert Noji `.ofc` export files into Anki-ready `.txt` import files with full i
 
 ## 🛠 Prerequisites
 
-This script requires **Python 3** and the **`zstd`** compression tool.
+All you need is **Python 3.14 or newer**. That's it.
 
-### 🐍 Installing Python 3
-First, check whether Python 3 is already installed. Open a terminal (macOS: **Terminal**, Windows: **Command Prompt** or **PowerShell**) and run:
+### 🐍 Installing Python
+First, check whether a recent Python is already installed. Open a terminal (macOS: **Terminal**, Windows: **Command Prompt** or **PowerShell**) and run:
 ```bash
 python3 --version
 ```
-If you see something like `Python 3.12.4`, you're all set and can skip to the next section. Otherwise, install it:
+If you see `Python 3.14` or higher (for example `Python 3.14.2`), you're all set and can skip to [Usage](#-usage). If you see an older version (like `3.12`) or an error, install the latest version:
 
 *   **macOS**:
     - Option A (easiest): Download the installer from [python.org/downloads](https://www.python.org/downloads/) and run it.
@@ -40,21 +40,19 @@ If you see something like `Python 3.12.4`, you're all set and can skip to the ne
     sudo apt update
     sudo apt install python3
     ```
+    Many Linux versions still ship an older Python. If yours is older than 3.14, see the note below.
 
-### ⚙️ Installing `zstd`
-The Noji data is compressed using Zstandard (`zstd`). You must install this tool for the script to work:
+### ⚙️ Using an older Python (3.13 or below)
+Noji compresses its deck data with Zstandard (`zstd`). Python 3.14+ can unpack this on its own. Older versions need one extra thing. Pick **one** of these:
 
-*   **macOS**: Open Terminal and run:
+*   **Option A:** install the `zstandard` package for Python:
     ```bash
-    brew install zstd
+    python3 -m pip install zstandard
     ```
-*   **Windows**:
-    - Download the `zstd.exe` from the [official Zstandard releases](https://github.com/facebook/zstd/releases).
-    - Or use a package manager: `scoop install zstd` or `choco install zstd`.
-*   **Linux**:
-    ```bash
-    sudo apt install zstd
-    ```
+*   **Option B:** install the `zstd` tool:
+    - **macOS**: `brew install zstd`
+    - **Windows**: download `zstd.exe` from the [official Zstandard releases](https://github.com/facebook/zstd/releases), or run `scoop install zstd` or `choco install zstd`.
+    - **Linux**: `sudo apt install zstd`
 
 ## 🚀 Usage
 

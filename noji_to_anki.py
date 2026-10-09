@@ -15,6 +15,33 @@ def clean_html(text):
 def extract_filename(url):
     return os.path.basename(url)
 
+def decompress_zstd(src, dst):
+    """
+    Decompresses a zstd file using Python's built-in module (3.14+),
+    the zstandard package, or the zstd command-line tool, in that order.
+    """
+    try:
+        from compression import zstd
+        with open(src, 'rb') as fin, open(dst, 'wb') as fout:
+            fout.write(zstd.decompress(fin.read()))
+        return
+    except ImportError:
+        pass
+
+    try:
+        import zstandard
+        # Streaming also works for files that don't store their decompressed size
+        with open(src, 'rb') as fin, open(dst, 'wb') as fout:
+            zstandard.ZstdDecompressor().copy_stream(fin, fout)
+        return
+    except ImportError:
+        pass
+
+    if not shutil.which('zstd'):
+        raise RuntimeError("Can't decompress the deck. Install Python 3.14 or newer "
+                           "(or the zstd tool, see README) and try again.")
+    subprocess.run(['zstd', '-q', '-d', src, '-o', dst], check=True)
+
 def process_noji_ofc(input_path, output_dir):
     """
     Processes a Noji .ofc file OR an already extracted folder.
@@ -68,7 +95,7 @@ def process_noji_ofc(input_path, output_dir):
             print(f"Found deck_export_data in {work_dir}")
             json_path = os.path.join(work_dir, 'deck_data.json')
             print("Decompressing deck data...")
-            subprocess.run(['zstd', '-d', export_data_path, '-o', json_path], check=True)
+            decompress_zstd(export_data_path, json_path)
         else:
             print("Error: Could not find deck_export_data or deck_data.json in the provided path.")
             return
