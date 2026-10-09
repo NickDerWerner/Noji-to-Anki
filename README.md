@@ -75,7 +75,7 @@ Noji compresses its deck data with Zstandard (`zstd`). Python 3.14+ can unpack t
 
 To use it, run it **after** the converter and give it two things: the `.txt` file the converter created (inside the `anki_...` folder) and the label you want:
 ```bash
-python3 prepend_label.py "anki_your_deck_name/anki_import_your_deck_name.ofc.txt" "Sachenrecht: "
+python3 prepend_label.py "anki_your_deck_name/anki_import_your_deck_name.txt" "Sachenrecht: "
 ```
 *   Do this **before** importing the file into Anki.
 *   Put a space at the end of the label (`"Sachenrecht: "`), so it doesn't stick to the card text.

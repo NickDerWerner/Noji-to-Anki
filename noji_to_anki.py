@@ -143,6 +143,8 @@ def process_noji_ofc(input_path, output_dir):
                 output_rows.append(f"{front}\t{back}\t{full_name}")
 
         base_name = os.path.basename(input_path.rstrip('/'))
+        if base_name.lower().endswith('.ofc'):
+            base_name = base_name[:-4]
         anki_file_path = os.path.join(output_dir, f"anki_import_{base_name}.txt")
         
         with open(anki_file_path, 'w', encoding='utf-8') as f:
