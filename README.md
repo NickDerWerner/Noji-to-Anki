@@ -56,6 +56,15 @@ Noji compresses its deck data with Zstandard (`zstd`). Python 3.14+ can unpack t
     - **Windows**: download `zstd.exe` from the [official Zstandard releases](https://github.com/facebook/zstd/releases), or run `scoop install zstd` or `choco install zstd`.
     - **Linux**: `sudo apt install zstd`
 
+## 📤 Exporting your deck from Noji
+
+1.  In Noji, open the deck and go to its **Settings**.
+2.  Choose **Export** and pick the **OFC** format (not CSV, which leaves out images). Sub-decks are included automatically.
+3.  Enter your email address. Noji emails you a download link once the file is ready.
+4.  Download the `.ofc` file **within 24 hours**, after that Noji deletes it.
+
+Noji only lets you export decks you created yourself, not decks you imported or duplicated. More details in [Noji's help article](https://help.noji.io/en/articles/11524889-export-your-decks).
+
 ## 🚀 Usage
 
 1.  Place your `.ofc` file (or the extracted folder) in this directory.

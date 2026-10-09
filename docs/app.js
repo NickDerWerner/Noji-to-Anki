@@ -28,7 +28,7 @@
     progress.hidden = view !== 'progress';
     result.hidden = view !== 'result';
     if (view !== 'picker') errorBox.hidden = true;
-    $('step1-title').textContent = view === 'result' ? 'Your deck is ready' : 'Choose your Noji export';
+    $('convert-title').textContent = view === 'result' ? 'Your deck is ready' : 'Convert it here';
   }
 
   function setStep(id, detail) {

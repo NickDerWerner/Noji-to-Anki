@@ -213,6 +213,8 @@ footer { padding: 12px 16px 48px; color: var(--muted); font-size: 14px; text-ali
   .stat b { font-size: 20px; }
 }
 
+.step-note { margin: 14px 0 0; font-size: 15px; }
+
 /* Legal pages (Impressum, Datenschutz) */
 .legal { padding-top: 32px; padding-bottom: 8px; }
 .legal h1 { font-size: clamp(26px, 5vw, 34px); margin-bottom: 20px; }
