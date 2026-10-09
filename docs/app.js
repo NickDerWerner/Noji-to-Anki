@@ -136,6 +136,24 @@
   window.addEventListener('dragover', (e) => e.preventDefault());
   window.addEventListener('drop', (e) => e.preventDefault());
 
+  // After the first download, thank the user and point to Buy Me a Coffee (once per visit)
+  const thanks = $('thanks');
+  let thanksShown = false;
+  function showThanks(isApkg) {
+    if (thanksShown || !thanks.showModal) return;
+    thanksShown = true;
+    thanks.querySelector('p').hidden = !isApkg;
+    setTimeout(() => thanks.showModal(), 800);
+  }
+  $('download').addEventListener('click', () => showThanks($('download').download.endsWith('.apkg')));
+  $('download-zip').addEventListener('click', () => showThanks(false));
+  // Close when clicking the dark background around the popup
+  thanks.addEventListener('click', (e) => {
+    const r = thanks.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) thanks.close();
+  });
+  $('thanks-coffee').addEventListener('click', () => thanks.close());
+
   $('again').addEventListener('click', () => {
     show('picker');
     fileInput.focus();
