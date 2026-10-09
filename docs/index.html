@@ -104,6 +104,9 @@
   .drop strong { display: block; font-size: 18px; margin-top: 8px; }
   .drop span { color: var(--muted); font-size: 15px; }
 
+  details.manual { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 14px; }
+  details.manual summary { cursor: pointer; color: var(--muted); }
+  details.manual > ol { margin-top: 14px; }
   details.options { margin-top: 16px; font-size: 15px; }
   details.options summary { cursor: pointer; color: var(--muted); }
   details.options .field { margin-top: 12px; }
@@ -248,11 +251,14 @@
       <div class="actions">
         <a class="button" id="download" href="#" download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
-          Download for Anki
+          Download Anki deck
         </a>
         <button class="link-button" id="again" type="button">Convert another file</button>
       </div>
-      <p class="file-name" id="r-file"></p>
+      <p class="file-name"><span id="r-file"></span><span id="zip-option"> · <a id="download-zip" href="#" download>or download as text file + images (.zip)</a></span></p>
+      <div class="notice warn" id="r-no-apkg" hidden>
+        <p>Your browser couldn't create an Anki deck file, so this download is a text file + images instead. See <em>Using the text file instead</em> below.</p>
+      </div>
       <div class="notice warn" id="r-failed" hidden>
         <p><strong id="r-failed-title"></strong></p>
         <p>These cards will show a broken picture in Anki. Check your internet connection and try again, or re-export the deck from Noji.</p>
@@ -269,38 +275,46 @@
   <section class="card">
     <h2><span class="num">2</span> Import into Anki</h2>
     <ol class="howto">
-      <li><strong>Unzip the download.</strong> <span class="muted">Mac: double-click it. Windows: right-click → <em>Extract All</em>.</span> You get a folder with a <code>.txt</code> file and an <code>attachments</code> folder.</li>
-      <li><strong>Import the cards.</strong> Open Anki, go to <em>File → Import</em> and choose the <code>.txt</code> file. Make sure <em>Allow HTML in fields</em> is checked, then click <em>Import</em>. Anki creates the decks and sub-decks for you.</li>
-      <li>
-        <strong>Copy the images.</strong> Copy everything <em>inside</em> the <code>attachments</code> folder into Anki's media folder:
-        <div class="tabs" role="tablist">
-          <button role="tab" id="tab-mac" aria-controls="panel-mac" aria-selected="true" type="button">Mac</button>
-          <button role="tab" id="tab-win" aria-controls="panel-win" aria-selected="false" type="button">Windows</button>
-          <button role="tab" id="tab-linux" aria-controls="panel-linux" aria-selected="false" type="button">Linux</button>
-        </div>
-        <div class="tab-panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac">
-          <ol>
-            <li>In Finder, press <code>⌘ Cmd</code> + <code>⇧ Shift</code> + <code>G</code>.</li>
-            <li><span class="path">Paste <code>~/Library/Application Support/Anki2/User 1/collection.media</code> <button class="copy" type="button">Copy</button></span></li>
-            <li>Press Enter and paste the images there.</li>
-          </ol>
-        </div>
-        <div class="tab-panel" role="tabpanel" id="panel-win" aria-labelledby="tab-win" hidden>
-          <ol>
-            <li>Press <code>Win</code> + <code>R</code>.</li>
-            <li><span class="path">Paste <code>%APPDATA%\Anki2\User 1\collection.media</code> <button class="copy" type="button">Copy</button></span></li>
-            <li>Press Enter and paste the images there.</li>
-          </ol>
-        </div>
-        <div class="tab-panel" role="tabpanel" id="panel-linux" aria-labelledby="tab-linux" hidden>
-          <ol>
-            <li><span class="path">Open <code>~/.local/share/Anki2/User 1/collection.media</code> <button class="copy" type="button">Copy</button></span></li>
-            <li>Paste the images there.</li>
-          </ol>
-        </div>
-        <p class="muted">If your Anki profile isn't called “User 1”, use its name instead.</p>
-      </li>
+      <li><strong>Double-click the <code>.apkg</code> file</strong> you downloaded. Anki opens and shows an import window. <span class="muted">(Or open Anki yourself and go to <em>File → Import</em>.)</span></li>
+      <li><strong>Click <em>Import</em>.</strong> That's it: your cards, sub-decks and images are now in Anki.</li>
     </ol>
+
+    <details class="manual">
+      <summary>Using the text file instead</summary>
+      <ol class="howto">
+        <li><strong>Unzip the download.</strong> <span class="muted">Mac: double-click it. Windows: right-click → <em>Extract All</em>.</span> You get a folder with a <code>.txt</code> file and an <code>attachments</code> folder.</li>
+        <li><strong>Import the cards.</strong> Open Anki, go to <em>File → Import</em> and choose the <code>.txt</code> file. Make sure <em>Allow HTML in fields</em> is checked, then click <em>Import</em>.</li>
+        <li>
+          <strong>Copy the images.</strong> Copy everything <em>inside</em> the <code>attachments</code> folder into Anki's media folder:
+          <div class="tabs" role="tablist">
+            <button role="tab" id="tab-mac" aria-controls="panel-mac" aria-selected="true" type="button">Mac</button>
+            <button role="tab" id="tab-win" aria-controls="panel-win" aria-selected="false" type="button">Windows</button>
+            <button role="tab" id="tab-linux" aria-controls="panel-linux" aria-selected="false" type="button">Linux</button>
+          </div>
+          <div class="tab-panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac">
+            <ol>
+              <li>In Finder, press <code>⌘ Cmd</code> + <code>⇧ Shift</code> + <code>G</code>.</li>
+              <li><span class="path">Paste <code>~/Library/Application Support/Anki2/User 1/collection.media</code> <button class="copy" type="button">Copy</button></span></li>
+              <li>Press Enter and paste the images there.</li>
+            </ol>
+          </div>
+          <div class="tab-panel" role="tabpanel" id="panel-win" aria-labelledby="tab-win" hidden>
+            <ol>
+              <li>Press <code>Win</code> + <code>R</code>.</li>
+              <li><span class="path">Paste <code>%APPDATA%\Anki2\User 1\collection.media</code> <button class="copy" type="button">Copy</button></span></li>
+              <li>Press Enter and paste the images there.</li>
+            </ol>
+          </div>
+          <div class="tab-panel" role="tabpanel" id="panel-linux" aria-labelledby="tab-linux" hidden>
+            <ol>
+              <li><span class="path">Open <code>~/.local/share/Anki2/User 1/collection.media</code> <button class="copy" type="button">Copy</button></span></li>
+              <li>Paste the images there.</li>
+            </ol>
+          </div>
+          <p class="muted">If your Anki profile isn't called “User 1”, use its name instead.</p>
+        </li>
+      </ol>
+    </details>
   </section>
 
   <section class="card faq">
@@ -310,8 +324,12 @@
       <p>No. The conversion runs entirely in your browser, and your file is never sent to a server. The only thing the page loads from the internet are images that are missing from your export, and those come straight from Noji.</p>
     </details>
     <details>
+      <summary>I already imported this deck before. Will I get duplicates?</summary>
+      <p>No. Importing the <code>.apkg</code> again updates the cards that are already there instead of adding them a second time.</p>
+    </details>
+    <details>
       <summary>Some images show up as a broken picture in Anki</summary>
-      <p>Make sure you copied the files from the <code>attachments</code> folder of this download into <code>collection.media</code>. Each card points to a file like <code>c4915ef6-….jpg</code>, and that exact file needs to be there. Files with other names (for example <code>409095344.jpg</code>) come from a different import and won't work for these cards.</p>
+      <p>With the <code>.apkg</code>, images are imported automatically. If you used the text file instead, make sure you copied the files from the <code>attachments</code> folder of this download into <code>collection.media</code>. Each card points to a file like <code>c4915ef6-….jpg</code>, and that exact file needs to be there. Files with other names (for example <code>409095344.jpg</code>) come from a different import and won't work for these cards.</p>
     </details>
     <details>
       <summary>Can I use this from the command line instead?</summary>
@@ -327,7 +345,9 @@
 
 <script src="vendor/fflate.js"></script>
 <script src="vendor/fzstd.js"></script>
+<script src="vendor/sql-wasm.js"></script>
 <script src="converter.js"></script>
+<script src="apkg.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

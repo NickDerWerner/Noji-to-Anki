@@ -87,10 +87,12 @@
         if (/^\d+$/.test(id) && deckMap.has(String(Number(id)))) names.push(deckMap.get(String(Number(id))));
       }
       names.push(deck.name);
-      return names.join('::');
+      // Anki trims spaces around deck names. Untrimmed names make its
+      // text import create a new deck for every card ("Deck+", "Deck++", ...)
+      return names.map((name) => String(name).trim()).join('::');
     }
 
-    const rows = [];
+    const notes = [];
     const mediaUrls = new Map();
     for (const deck of data) {
       const deckName = fullDeckName(deck);
@@ -110,12 +112,22 @@
         }
 
         if (label && !front.startsWith(label)) front = label + front;
-        rows.push(`${front}\t${back}\t${deckName}`);
+        // The Noji note id keeps re-imports from creating duplicates in Anki
+        const guid = note.id !== undefined && note.id !== null ? `noji-${note.id}` : `noji-${deck.id}-${notes.length}`;
+        notes.push({ guid, front, back, deckName });
       }
     }
 
-    const txt = '#separator:tab\n#html:true\n#deck column:3\n' + rows.map((r) => r + '\n').join('');
-    return { txt, cardCount: rows.length, deckCount: data.length, mediaUrls };
+    // Parent decks must come before their sub-decks, otherwise Anki's
+    // text import duplicates the parent ("Deck+") for cards stored in it
+    const depth = (n) => n.deckName.split('::').length;
+    notes.sort((a, b) => depth(a) - depth(b));
+
+    const txt = '#separator:tab\n#html:true\n#deck column:3\n' +
+      notes.map((n) => `${n.front}\t${n.back}\t${n.deckName}\n`).join('');
+    // Decks with the same name end up as one deck in Anki
+    const deckCount = new Set(data.map(fullDeckName)).size;
+    return { txt, notes, cardCount: notes.length, deckCount, mediaUrls };
   }
 
   // 3. Take the images the cards use out of attachments.zip
@@ -179,8 +191,9 @@
   }
 
   // Everything in one go. onStep(stepId, detail) reports progress to the page.
+  // Pass SQL (an initialized sql.js) and ApkgBuilder to also get an .apkg.
   async function convert(ofcBytes, fileName, options) {
-    const { label = '', onStep = () => {}, fetchImpl } = options || {};
+    const { label = '', onStep = () => {}, fetchImpl, SQL, ApkgBuilder } = options || {};
     const tick = () => new Promise((resolve) => setTimeout(resolve, 0));
 
     onStep('unpack');
@@ -189,7 +202,7 @@
 
     onStep('cards');
     await tick();
-    const { txt, cardCount, deckCount, mediaUrls } = buildCards(data, label);
+    const { txt, notes, cardCount, deckCount, mediaUrls } = buildCards(data, label);
 
     onStep('images');
     await tick();
@@ -206,8 +219,12 @@
     await tick();
     const baseName = deckBaseName(fileName);
     const zipBytes = buildZip(baseName, txt, media);
+    const safeMedia = new Map([...media].filter(([name]) => isSafeFilename(name)));
+    const apkgBytes = SQL && ApkgBuilder ? await ApkgBuilder.buildApkg(SQL, notes, safeMedia) : null;
 
     return {
+      apkgBytes,
+      apkgName: `${baseName}.apkg`,
       zipBytes,
       zipName: `anki_${baseName}.zip`,
       txtName: `anki_import_${baseName}.txt`,

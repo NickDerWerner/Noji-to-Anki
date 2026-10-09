@@ -9,7 +9,19 @@
   const result = $('result');
   const errorBox = $('error');
   const steps = [...progress.querySelectorAll('li')];
-  let downloadUrl = null;
+  let downloadUrls = [];
+
+  // Load SQLite (needed for the .apkg) in the background right away
+  const sqlReady = initSqlJs({ locateFile: (file) => `vendor/${file}` }).catch((e) => {
+    console.error('Could not load SQLite, falling back to text file + images', e);
+    return null;
+  });
+
+  function objectUrl(bytes, type) {
+    const url = URL.createObjectURL(new Blob([bytes], { type }));
+    downloadUrls.push(url);
+    return url;
+  }
 
   function show(view) {
     picker.hidden = view !== 'picker';
@@ -47,7 +59,8 @@
 
   async function handleFile(file) {
     if (!file) return;
-    if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    downloadUrls.forEach((url) => URL.revokeObjectURL(url));
+    downloadUrls = [];
     resetSteps();
     show('progress');
     setStep('read');
@@ -57,19 +70,31 @@
       const r = await NojiConverter.convert(bytes, file.name, {
         label: $('label').value,
         onStep: setStep,
+        SQL: await sqlReady,
+        ApkgBuilder,
       });
 
-      downloadUrl = URL.createObjectURL(new Blob([r.zipBytes], { type: 'application/zip' }));
+      const zipUrl = objectUrl(r.zipBytes, 'application/zip');
       const link = $('download');
-      link.href = downloadUrl;
-      link.download = r.zipName;
+      const zipLink = $('download-zip');
+      if (r.apkgBytes) {
+        link.href = objectUrl(r.apkgBytes, 'application/octet-stream');
+        link.download = r.apkgName;
+        zipLink.href = zipUrl;
+        zipLink.download = r.zipName;
+      } else {
+        link.href = zipUrl;
+        link.download = r.zipName;
+      }
+      $('r-file').textContent = link.download;
+      $('zip-option').hidden = !r.apkgBytes;
+      $('r-no-apkg').hidden = !!r.apkgBytes;
 
       $('r-cards').textContent = r.cardCount.toLocaleString();
       $('r-decks').textContent = r.deckCount.toLocaleString();
       $('r-images').textContent = r.imageTotal === r.imagesReady
         ? r.imageTotal.toLocaleString()
         : `${r.imagesReady} / ${r.imageTotal}`;
-      $('r-file').textContent = r.zipName;
 
       const failedBox = $('r-failed');
       failedBox.hidden = r.failed.length === 0;
