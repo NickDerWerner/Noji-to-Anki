@@ -65,11 +65,21 @@ Noji compresses its deck data with Zstandard (`zstd`). Python 3.14+ can unpack t
 3.  A new folder named `anki_your_deck_name` will be created.
 
 ### Optional: Add a label to every card
-If you want each card to show which subject it belongs to (e.g. "Sachenrecht: What is ownership?"), run this after the converter:
+**Most people can skip this step.** The converter above is all you need.
+
+`prepend_label.py` is a separate helper script that only runs if you start it yourself. It adds the same text to the start of the front side of every card. This is handy if you study cards from several subjects mixed together and want to see at a glance which subject a card belongs to:
+
+| Before | After |
+|---|---|
+| What is ownership? | **Sachenrecht:** What is ownership? |
+
+To use it, run it **after** the converter and give it two things: the `.txt` file the converter created (inside the `anki_...` folder) and the label you want:
 ```bash
 python3 prepend_label.py "anki_your_deck_name/anki_import_your_deck_name.ofc.txt" "Sachenrecht: "
 ```
-Running it twice won't add the label twice.
+*   Do this **before** importing the file into Anki.
+*   Put a space at the end of the label (`"Sachenrecht: "`), so it doesn't stick to the card text.
+*   Running it twice won't add the label twice.
 
 ## 📥 Importing into Anki
 
