@@ -2,6 +2,8 @@
 
 Convert Noji `.ofc` export files into Anki-ready `.txt` import files with full image support and sub-deck hierarchy.
 
+> 🌐 **Easiest way: use the website at [nojitoanki.com](https://nojitoanki.com).** Nothing to install, and your deck never leaves your computer. The steps below are for running the converter yourself with Python.
+
 ⏱️ **Time needed:** about 5–10 minutes, even if you've never used a terminal before.
 
 > 💡 **Not a tech person? No problem!**

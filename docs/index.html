@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noji to Anki</title>
+<meta name="description" content="Convert your Noji flashcards to Anki, with images and sub-decks. Free, and your deck never leaves your computer.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='3' y='7' width='18' height='22' rx='4' fill='%23b8c2ff'/><rect x='11' y='3' width='18' height='22' rx='4' fill='%233b5bdb'/></svg>">
+<style>
+  :root {
+    --bg: #f6f6f3;
+    --surface: #ffffff;
+    --text: #1c1c1e;
+    --muted: #64646b;
+    --border: #e3e3de;
+    --accent: #3b5bdb;
+    --accent-text: #ffffff;
+    --accent-soft: #edf0ff;
+    --ok: #2b8a3e;
+    --ok-soft: #ebfbee;
+    --warn: #a35c00;
+    --warn-soft: #fff6e5;
+    --error: #c92a2a;
+    --error-soft: #fff0f0;
+    --code-bg: #f0f0ec;
+    --radius: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121214;
+      --surface: #1b1b1f;
+      --text: #ececee;
+      --muted: #9d9da5;
+      --border: #2d2d33;
+      --accent: #7d93ff;
+      --accent-text: #0f1330;
+      --accent-soft: #1f2440;
+      --ok: #69db7c;
+      --ok-soft: #15291a;
+      --warn: #ffc069;
+      --warn-soft: #2e2412;
+      --error: #ff8787;
+      --error-soft: #331a1a;
+      --code-bg: #26262b;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main, header, footer { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+  a { color: var(--accent); }
+  code {
+    font: 0.88em ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 6px;
+    overflow-wrap: anywhere;
+  }
+
+  header { padding-top: 28px; display: flex; align-items: center; gap: 10px; font-weight: 650; }
+  header svg { width: 28px; height: 28px; }
+
+  .hero { padding: 40px 0 28px; }
+  h1 { font-size: clamp(28px, 6vw, 40px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 12px; }
+  .hero p { margin: 0; color: var(--muted); font-size: 18px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .badge {
+    font-size: 14px; color: var(--muted);
+    border: 1px solid var(--border); background: var(--surface);
+    padding: 4px 12px; border-radius: 999px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  h2 { font-size: 20px; margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
+  .num {
+    flex: none; width: 28px; height: 28px; border-radius: 50%;
+    display: inline-grid; place-items: center;
+    background: var(--accent-soft); color: var(--accent);
+    font-size: 15px; font-weight: 700;
+  }
+
+  /* Drop zone */
+  .drop {
+    display: block; position: relative; cursor: pointer;
+    border: 2px dashed var(--border); border-radius: 12px;
+    padding: 36px 16px; text-align: center;
+    transition: border-color .15s, background .15s;
+  }
+  .drop:hover, .drop.dragging, .drop:focus-within { border-color: var(--accent); background: var(--accent-soft); }
+  .drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+  .drop svg { width: 40px; height: 40px; color: var(--accent); }
+  .drop strong { display: block; font-size: 18px; margin-top: 8px; }
+  .drop span { color: var(--muted); font-size: 15px; }
+
+  details.options { margin-top: 16px; font-size: 15px; }
+  details.options summary { cursor: pointer; color: var(--muted); }
+  details.options .field { margin-top: 12px; }
+  details.options label { display: block; font-weight: 600; margin-bottom: 4px; }
+  details.options p { margin: 6px 0 0; color: var(--muted); }
+  input[type="text"] {
+    width: 100%; font: inherit; color: var(--text); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px;
+  }
+  input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  /* Progress */
+  .steps { list-style: none; margin: 0; padding: 0; }
+  .steps li { display: flex; align-items: center; gap: 10px; padding: 6px 0; color: var(--muted); }
+  .steps li::before {
+    content: ""; flex: none; width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid var(--border);
+  }
+  .steps li.active { color: var(--text); }
+  .steps li.active::before { border-color: var(--accent); border-right-color: transparent; animation: spin .8s linear infinite; }
+  .steps li.done { color: var(--text); }
+  .steps li.done::before { border-color: var(--ok); background: var(--ok); box-shadow: inset 0 0 0 3px var(--surface); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .steps li.active::before { animation: none; } }
+
+  /* Result */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .stat { background: var(--bg); border-radius: 10px; padding: 12px; text-align: center; }
+  .stat b { display: block; font-size: 24px; line-height: 1.2; }
+  .stat span { color: var(--muted); font-size: 14px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .button {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: inherit; font-weight: 650; text-decoration: none; cursor: pointer;
+    background: var(--accent); color: var(--accent-text);
+    border: 0; border-radius: 10px; padding: 12px 20px;
+  }
+  .button svg { width: 20px; height: 20px; }
+  .link-button { font: inherit; background: none; border: 0; color: var(--accent); cursor: pointer; padding: 8px 4px; text-decoration: underline; }
+  .file-name { color: var(--muted); font-size: 14px; margin: 12px 0 0; overflow-wrap: anywhere; }
+
+  .notice { border-radius: 10px; padding: 12px 16px; margin-top: 16px; font-size: 15px; }
+  .notice p { margin: 0; }
+  .notice p + p, .notice ul { margin-top: 6px; }
+  .notice ul { padding-left: 20px; margin-bottom: 0; }
+  .notice.warn { background: var(--warn-soft); color: var(--warn); }
+  .notice.error { background: var(--error-soft); color: var(--error); }
+  .notice.ok { background: var(--ok-soft); color: var(--ok); }
+
+  /* Instructions */
+  ol.howto { margin: 0; padding-left: 22px; }
+  ol.howto > li { margin-bottom: 14px; padding-left: 4px; }
+  ol.howto > li:last-child { margin-bottom: 0; }
+  .muted { color: var(--muted); }
+
+  .tabs { display: flex; gap: 4px; margin: 10px 0 0; border-bottom: 1px solid var(--border); }
+  .tabs button {
+    font: inherit; font-size: 15px; background: none; border: 0; cursor: pointer;
+    color: var(--muted); padding: 6px 12px; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+  .tab-panel { padding-top: 10px; }
+  .tab-panel ol { margin: 0; padding-left: 20px; }
+  .tab-panel li { margin-bottom: 6px; }
+  .path { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .copy {
+    font: inherit; font-size: 13px; cursor: pointer; color: var(--accent);
+    background: var(--accent-soft); border: 0; border-radius: 6px; padding: 2px 10px;
+  }
+
+  .faq details { border-top: 1px solid var(--border); padding: 12px 0; }
+  .faq details:last-child { padding-bottom: 0; }
+  .faq summary { cursor: pointer; font-weight: 600; }
+  .faq details p { margin: 8px 0 0; color: var(--muted); }
+
+  footer { padding: 12px 16px 48px; color: var(--muted); font-size: 14px; text-align: center; }
+
+  [hidden] { display: none !important; }
+  @media (max-width: 480px) {
+    .card { padding: 18px; }
+    .stats { gap: 8px; }
+    .stat b { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="18" height="22" rx="4" fill="#b8c2ff"/><rect x="11" y="3" width="18" height="22" rx="4" fill="#3b5bdb"/></svg>
+  Noji to Anki
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Move your Noji flashcards to Anki</h1>
+    <p>Your cards, images and sub-decks, ready to import into Anki in about a minute.</p>
+    <div class="badges">
+      <span class="badge">🔒 Your deck never leaves your computer</span>
+      <span class="badge">Free &amp; open source</span>
+      <span class="badge">Nothing to install</span>
+    </div>
+  </section>
+
+  <section class="card" id="step-convert">
+    <h2><span class="num">1</span> <span id="step1-title">Choose your Noji export</span></h2>
+
+    <div id="picker">
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".ofc,.zip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+        <strong>Drop your <code>.ofc</code> file here</strong>
+        <span>or click to choose it</span>
+      </label>
+
+      <details class="options">
+        <summary>Options (most people can skip this)</summary>
+        <div class="field">
+          <label for="label">Label in front of every card</label>
+          <input type="text" id="label" placeholder="e.g. Sachenrecht: " autocomplete="off">
+          <p>Handy if you study several subjects mixed together. “What is ownership?” becomes “Sachenrecht: What is ownership?”. Leave empty for no label.</p>
+        </div>
+      </details>
+    </div>
+
+    <div id="progress" hidden aria-live="polite">
+      <ul class="steps">
+        <li data-step="read">Reading your file</li>
+        <li data-step="unpack">Unpacking the deck</li>
+        <li data-step="cards">Building cards</li>
+        <li data-step="images">Collecting images</li>
+        <li data-step="download" hidden>Downloading missing images</li>
+        <li data-step="zip">Packing your download</li>
+      </ul>
+    </div>
+
+    <div id="result" hidden>
+      <div class="stats">
+        <div class="stat"><b id="r-cards">0</b><span>cards</span></div>
+        <div class="stat"><b id="r-decks">0</b><span>decks</span></div>
+        <div class="stat"><b id="r-images">0</b><span>images</span></div>
+      </div>
+      <div class="actions">
+        <a class="button" id="download" href="#" download>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
+          Download for Anki
+        </a>
+        <button class="link-button" id="again" type="button">Convert another file</button>
+      </div>
+      <p class="file-name" id="r-file"></p>
+      <div class="notice warn" id="r-failed" hidden>
+        <p><strong id="r-failed-title"></strong></p>
+        <p>These cards will show a broken picture in Anki. Check your internet connection and try again, or re-export the deck from Noji.</p>
+        <ul id="r-failed-list"></ul>
+      </div>
+    </div>
+
+    <div class="notice error" id="error" hidden>
+      <p><strong>That didn't work.</strong></p>
+      <p id="error-text"></p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2><span class="num">2</span> Import into Anki</h2>
+    <ol class="howto">
+      <li><strong>Unzip the download.</strong> <span class="muted">Mac: double-click it. Windows: right-click → <em>Extract All</em>.</span> You get a folder with a <code>.txt</code> file and an <code>attachments</code> folder.</li>
+      <li><strong>Import the cards.</strong> Open Anki, go to <em>File → Import</em> and choose the <code>.txt</code> file. Make sure <em>Allow HTML in fields</em> is checked, then click <em>Import</em>. Anki creates the decks and sub-decks for you.</li>
+      <li>
+        <strong>Copy the images.</strong> Copy everything <em>inside</em> the <code>attachments</code> folder into Anki's media folder:
+        <div class="tabs" role="tablist">
+          <button role="tab" id="tab-mac" aria-controls="panel-mac" aria-selected="true" type="button">Mac</button>
+          <button role="tab" id="tab-win" aria-controls="panel-win" aria-selected="false" type="button">Windows</button>
+          <button role="tab" id="tab-linux" aria-controls="panel-linux" aria-selected="false" type="button">Linux</button>
+        </div>
+        <div class="tab-panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac">
+          <ol>
+            <li>In Finder, press <code>⌘ Cmd</code> + <code>⇧ Shift</code> + <code>G</code>.</li>
+            <li><span class="path">Paste <code>~/Library/Application Support/Anki2/User 1/collection.media</code> <button class="copy" type="button">Copy</button></span></li>
+            <li>Press Enter and paste the images there.</li>
+          </ol>
+        </div>
+        <div class="tab-panel" role="tabpanel" id="panel-win" aria-labelledby="tab-win" hidden>
+          <ol>
+            <li>Press <code>Win</code> + <code>R</code>.</li>
+            <li><span class="path">Paste <code>%APPDATA%\Anki2\User 1\collection.media</code> <button class="copy" type="button">Copy</button></span></li>
+            <li>Press Enter and paste the images there.</li>
+          </ol>
+        </div>
+        <div class="tab-panel" role="tabpanel" id="panel-linux" aria-labelledby="tab-linux" hidden>
+          <ol>
+            <li><span class="path">Open <code>~/.local/share/Anki2/User 1/collection.media</code> <button class="copy" type="button">Copy</button></span></li>
+            <li>Paste the images there.</li>
+          </ol>
+        </div>
+        <p class="muted">If your Anki profile isn't called “User 1”, use its name instead.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="card faq">
+    <h2>Questions</h2>
+    <details>
+      <summary>Is my deck uploaded anywhere?</summary>
+      <p>No. The conversion runs entirely in your browser, and your file is never sent to a server. The only thing the page loads from the internet are images that are missing from your export, and those come straight from Noji.</p>
+    </details>
+    <details>
+      <summary>Some images show up as a broken picture in Anki</summary>
+      <p>Make sure you copied the files from the <code>attachments</code> folder of this download into <code>collection.media</code>. Each card points to a file like <code>c4915ef6-….jpg</code>, and that exact file needs to be there. Files with other names (for example <code>409095344.jpg</code>) come from a different import and won't work for these cards.</p>
+    </details>
+    <details>
+      <summary>Can I use this from the command line instead?</summary>
+      <p>Yes. The same converter is available as a Python script on <a href="https://github.com/NickDerWerner/Noji-to-Anki">GitHub</a>.</p>
+    </details>
+  </section>
+</main>
+
+<footer>
+  Made by Nick Werner · <a href="https://github.com/NickDerWerner/Noji-to-Anki">Open source on GitHub</a><br>
+  Not affiliated with Noji or Anki.
+</footer>
+
+<script src="vendor/fflate.js"></script>
+<script src="vendor/fzstd.js"></script>
+<script src="converter.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
