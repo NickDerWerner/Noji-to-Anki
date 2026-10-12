@@ -187,10 +187,23 @@ ol.howto > li:last-child { margin-bottom: 0; }
   transition: transform .1s;
 }
 .coffee-button:hover { transform: translateY(-1px); }
-.support { text-align: center; }
-.support .cup { font-size: 44px; line-height: 1; }
-.support h2 { justify-content: center; margin: 12px 0 8px; font-size: 22px; }
-.support p { color: var(--muted); margin: 0 auto 20px; max-width: 460px; }
+.about { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center; }
+.about-photo { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 12px; display: block; }
+.about h2 { font-size: 26px; margin-bottom: 12px; }
+.about-text p { margin: 0 0 12px; color: var(--muted); }
+.about-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; }
+.social {
+  display: inline-grid; place-items: center; width: 50px; height: 50px; flex: none;
+  color: var(--text); border: 2px solid var(--border); border-radius: 12px;
+  transition: border-color .15s, color .15s;
+}
+.social:hover { color: var(--accent); border-color: var(--accent); }
+.social svg { width: 24px; height: 24px; }
+@media (max-width: 600px) {
+  .about { grid-template-columns: 1fr; }
+  .about-photo { max-width: 240px; margin: 0 auto; }
+  .about-actions .coffee-button { flex: 1 0 100%; }
+}
 
 dialog.thanks {
   width: min(440px, calc(100vw - 32px)); padding: 28px 24px 20px; text-align: center;

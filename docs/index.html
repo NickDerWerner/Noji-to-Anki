@@ -25,7 +25,7 @@
 <header>
   <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="18" height="22" rx="4" fill="#b8c2ff"/><rect x="11" y="3" width="18" height="22" rx="4" fill="#3b5bdb"/></svg>
   Noji to Anki
-  <a class="header-coffee" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> Buy me a coffee</a>
+  <a class="header-coffee" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" data-goatcounter-click="coffee-header" data-goatcounter-title="Coffee button (header)"><span aria-hidden="true">☕</span> Buy me a coffee</a>
 </header>
 
 <main>
@@ -157,11 +157,22 @@
     </details>
   </section>
 
-  <section class="card support">
-    <div class="cup" aria-hidden="true">☕</div>
-    <h2>Did this save you some time?</h2>
-    <p>This converter is free, has no ads and never sees your cards. If it helped you, you can buy me a coffee. It keeps me motivated to keep improving it.</p>
-    <a class="coffee-button" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener"><span aria-hidden="true">☕</span> Buy me a coffee</a>
+  <section class="card about">
+    <img class="about-photo" src="nick.jpg" width="560" height="700" alt="Photo of Nick Werner" loading="lazy">
+    <div class="about-text">
+      <h2>Hey there <span aria-hidden="true">👋</span></h2>
+      <p>I'm Nick, I study business informatics at the Technical University of Munich (TUM).</p>
+      <p>I was stuck in the Noji app as well, which was super annoying, especially when their servers went down for multiple days. So I built this tool to make it easier to switch to Anki, and I'm super happy if it helped you :)</p>
+      <div class="about-actions">
+        <a class="coffee-button" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" data-goatcounter-click="coffee-about" data-goatcounter-title="Coffee button (about)"><span aria-hidden="true">☕</span> Buy me a coffee</a>
+        <a class="social" href="https://www.instagram.com/nick.wrnr/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.3" fill="currentColor"/></svg>
+        </a>
+        <a class="social" href="https://www.linkedin.com/in/nick-elias-werner-45b225227/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11.25H3V9.75Zm6.5 0h3.83v1.54h.06c.53-1 1.84-2.05 3.79-2.05 4.05 0 4.8 2.66 4.8 6.13V21h-4v-4.98c0-1.19-.02-2.72-1.66-2.72-1.66 0-1.92 1.3-1.92 2.63V21h-4V9.75Z"/></svg>
+        </a>
+      </div>
+    </div>
   </section>
 
   <section class="card faq">
@@ -194,7 +205,7 @@
   <h2 id="thanks-title">Your deck is downloading</h2>
   <p>Next, double-click the <code>.apkg</code> file to import it into Anki.</p>
   <p>If this saved you some time, I'd be really happy about a coffee.</p>
-  <a class="coffee-button" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" id="thanks-coffee"><span aria-hidden="true">☕</span> Buy me a coffee</a>
+  <a class="coffee-button" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" id="thanks-coffee" data-goatcounter-click="coffee-popup" data-goatcounter-title="Coffee button (popup)"><span aria-hidden="true">☕</span> Buy me a coffee</a>
   <form method="dialog"><button class="link-button" type="submit">No thanks, close</button></form>
 </dialog>
 
@@ -210,5 +221,6 @@
 <script src="converter.js"></script>
 <script src="apkg.js"></script>
 <script src="app.js"></script>
+<script data-goatcounter="https://nojitoanki.goatcounter.com/count" async src="vendor/goatcounter.js"></script>
 </body>
 </html>

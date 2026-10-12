@@ -51,6 +51,13 @@
     downloadStep.textContent = 'Downloading missing images';
   }
 
+  // Anonymous usage count (GoatCounter). Only the event name is sent, never anything from the deck.
+  function track(path, title) {
+    try {
+      if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path, title, event: true });
+    } catch (e) { /* counting must never break the converter */ }
+  }
+
   function showError(message) {
     show('picker');
     $('error-text').textContent = message;
@@ -113,8 +120,10 @@
         }
       }
       show('result');
+      track('converted', 'Deck converted');
     } catch (e) {
       console.error(e);
+      track('conversion-failed', 'Conversion failed');
       showError(e.message || 'Something went wrong while converting this file.');
     } finally {
       fileInput.value = '';
