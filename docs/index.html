@@ -7,6 +7,9 @@
 <meta name="description" content="Convert your Noji flashcards to Anki, with images and sub-decks. Free, and your deck never leaves your computer.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='3' y='7' width='18' height='22' rx='4' fill='%23b8c2ff'/><rect x='11' y='3' width='18' height='22' rx='4' fill='%233b5bdb'/></svg>">
 <link rel="canonical" href="https://nojitoanki.com/">
+<link rel="alternate" hreflang="en" href="https://nojitoanki.com/?lang=en">
+<link rel="alternate" hreflang="de" href="https://nojitoanki.com/?lang=de">
+<link rel="alternate" hreflang="x-default" href="https://nojitoanki.com/">
 <meta name="theme-color" content="#3b5bdb">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Noji to Anki">
@@ -24,110 +27,111 @@
 
 <header>
   <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="18" height="22" rx="4" fill="#b8c2ff"/><rect x="11" y="3" width="18" height="22" rx="4" fill="#3b5bdb"/></svg>
-  Noji to Anki
-  <a class="header-coffee" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" data-goatcounter-click="coffee-header" data-goatcounter-title="Coffee button (header)"><span aria-hidden="true">☕</span> Buy me a coffee</a>
+  <span class="brand">Noji to Anki</span>
+  <a class="lang-switch" id="lang-switch" href="?lang=de" data-i18n="header.lang">DE</a>
+  <a class="header-coffee" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" data-goatcounter-click="coffee-header" data-goatcounter-title="Coffee button (header)" data-i18n="header.coffee"><span aria-hidden="true">☕</span> Buy me a coffee</a>
 </header>
 
 <main>
   <section class="hero">
-    <h1>Convert your Noji flashcards to Anki for free</h1>
-    <p>Your cards, images and sub-decks, ready to import into Anki in about a minute.</p>
+    <h1 data-i18n="hero.title">Convert your Noji flashcards to Anki for free</h1>
+    <p data-i18n="hero.text">Your cards, images and sub-decks, ready to import into Anki in about a minute.</p>
   </section>
 
-  <p class="counter"><span class="badge badge-count"><span aria-hidden="true">🎉</span> <b id="deck-count">30</b> decks converted</span></p>
+  <p class="counter" data-i18n="counter"><span aria-hidden="true">🎉</span> <b id="deck-count">30</b> decks converted so far</p>
 
   <section class="card">
-    <h2><span class="num">1</span> Export your deck from Noji</h2>
+    <h2 data-i18n="export.title"><span class="num">1</span> Export your deck from Noji</h2>
     <ol class="howto">
-      <li>In Noji, open the deck you want to move and go to its <strong>“Settings”</strong>.</li>
-      <li>Choose <strong>“Export”</strong> and pick the <strong>“OFC”</strong> format. <span class="muted">(Not CSV: CSV leaves out images.)</span> Exporting a deck includes all its sub-decks.</li>
-      <li><strong>Turn on the option to include your learning progress.</strong> Your cards then keep their due dates and intervals in Anki instead of starting over as new cards.</li>
-      <li>Enter your email address. Noji emails you a download link once the file is ready, which can take a few minutes for big decks.</li>
-      <li><strong>Download the <code>.ofc</code> file from the email within 24 hours.</strong> After that, Noji deletes it.</li>
+      <li data-i18n="export.1">In Noji, open the deck you want to move and go to its <strong>“Settings”</strong>.</li>
+      <li data-i18n="export.2">Choose <strong>“Export”</strong> and pick the <strong>“OFC”</strong> format. <span class="muted">(Not CSV: CSV leaves out images.)</span> Exporting a deck includes all its sub-decks.</li>
+      <li data-i18n="export.3"><strong>Turn on the option to include your learning progress.</strong> Your cards then keep their due dates and intervals in Anki instead of starting over as new cards.</li>
+      <li data-i18n="export.4">Enter your email address. Noji emails you a download link once the file is ready, which can take a few minutes for big decks.</li>
+      <li data-i18n="export.5"><strong>Download the <code>.ofc</code> file from the email within 24 hours.</strong> After that, Noji deletes it.</li>
     </ol>
   </section>
 
   <section class="card" id="step-convert">
-    <h2><span class="num">2</span> <span id="convert-title">Convert it here</span></h2>
+    <h2><span class="num">2</span> <span id="convert-title" data-i18n="convert.title">Convert it here</span></h2>
 
     <div id="picker">
       <label class="drop" id="drop">
         <input type="file" id="file" accept=".ofc,.zip">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-        <strong>Drop your <code>.ofc</code> file here</strong>
-        <span>or click to choose it</span>
+        <strong data-i18n="drop.title">Drop your <code>.ofc</code> file here</strong>
+        <span data-i18n="drop.text">or click to choose it</span>
       </label>
 
       <details class="options">
-        <summary>Options (most people can skip this)</summary>
+        <summary data-i18n="options.summary">Options (most people can skip this)</summary>
         <div class="field">
-          <label for="label">Label in front of every card</label>
-          <input type="text" id="label" placeholder="e.g. Biology: " autocomplete="off">
-          <p>Handy if you study several subjects mixed together. “What is a cell?” becomes “Biology: What is a cell?”. Leave empty for no label.</p>
+          <label for="label" data-i18n="options.label">Label in front of every card</label>
+          <input type="text" id="label" placeholder="e.g. Biology: " data-i18n-attr="placeholder:options.placeholder" autocomplete="off">
+          <p data-i18n="options.help">Handy if you study several subjects mixed together. “What is a cell?” becomes “Biology: What is a cell?”. Leave empty for no label.</p>
         </div>
       </details>
     </div>
 
     <div id="progress" hidden aria-live="polite">
       <ul class="steps">
-        <li data-step="read">Reading your file</li>
-        <li data-step="unpack">Unpacking the deck</li>
-        <li data-step="cards">Building cards</li>
-        <li data-step="images">Collecting images</li>
+        <li data-step="read" data-i18n="step.read">Reading your file</li>
+        <li data-step="unpack" data-i18n="step.unpack">Unpacking the deck</li>
+        <li data-step="cards" data-i18n="step.cards">Building cards</li>
+        <li data-step="images" data-i18n="step.images">Collecting images</li>
         <li data-step="download" hidden>Downloading missing images</li>
-        <li data-step="zip">Packing your download</li>
+        <li data-step="zip" data-i18n="step.zip">Packing your download</li>
       </ul>
     </div>
 
     <div id="result" hidden>
       <div class="stats">
-        <div class="stat"><b id="r-cards">0</b><span>cards</span></div>
-        <div class="stat"><b id="r-decks">0</b><span>decks</span></div>
-        <div class="stat"><b id="r-images">0</b><span>images</span></div>
+        <div class="stat"><b id="r-cards">0</b><span data-i18n="stat.cards">cards</span></div>
+        <div class="stat"><b id="r-decks">0</b><span data-i18n="stat.decks">decks</span></div>
+        <div class="stat"><b id="r-images">0</b><span data-i18n="stat.images">images</span></div>
       </div>
       <div class="actions">
-        <a class="button" id="download" href="#" download>
+        <a class="button" id="download" href="#" download data-i18n="result.download">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4"/><path d="M4 17v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1"/></svg>
           Download Anki deck
         </a>
-        <button class="link-button" id="again" type="button">Convert another file</button>
+        <button class="link-button" id="again" type="button" data-i18n="result.again">Convert another file</button>
       </div>
-      <p class="file-name"><span id="r-file"></span><span id="zip-option"> · <a id="download-zip" href="#" download>or download as text file + images (.zip)</a></span></p>
+      <p class="file-name"><span id="r-file"></span><span id="zip-option"> · <a id="download-zip" href="#" download data-i18n="result.zip">or download as text file + images (.zip)</a></span></p>
       <div class="notice ok" id="r-progress" hidden>
         <p><strong id="r-progress-title"></strong></p>
-        <p>When you import, turn on “Import any learning progress” in Anki's import window. Otherwise every card arrives as new.</p>
+        <p data-i18n="result.progress">When you import, turn on “Import any learning progress” in Anki's import window. Otherwise every card arrives as new.</p>
       </div>
       <div class="notice warn" id="r-no-apkg" hidden>
-        <p>Your browser couldn't create an Anki deck file, so this download is a text file + images instead. See “Using the text file instead” below.</p>
+        <p data-i18n="result.noApkg">Your browser couldn't create an Anki deck file, so this download is a text file + images instead. See “Using the text file instead” below.</p>
       </div>
       <div class="notice warn" id="r-failed" hidden>
         <p><strong id="r-failed-title"></strong></p>
-        <p>These cards will show a broken picture in Anki. Check your internet connection and try again, or re-export the deck from Noji.</p>
+        <p data-i18n="result.failed">These cards will show a broken picture in Anki. Check your internet connection and try again, or re-export the deck from Noji.</p>
         <ul id="r-failed-list"></ul>
       </div>
     </div>
 
     <div class="notice error" id="error" hidden>
-      <p><strong>That didn't work.</strong></p>
+      <p><strong data-i18n="error.title">That didn't work.</strong></p>
       <p id="error-text"></p>
     </div>
   </section>
 
   <section class="card">
-    <h2><span class="num">3</span> Import into Anki</h2>
+    <h2 data-i18n="import.title"><span class="num">3</span> Import into Anki</h2>
     <ol class="howto">
-      <li><strong>Double-click the <code>.apkg</code> file</strong> you downloaded. Anki opens and shows an import window. <span class="muted">(Or open Anki yourself and go to “File → Import”.)</span></li>
-      <li><strong>Turn on “Import any learning progress”</strong> in the import window if you exported your learning progress. <strong>Don't skip this:</strong> without it, all cards arrive as new, and importing again later won't fix it.</li>
-      <li><strong>Click “Import”.</strong> That's it: your cards, sub-decks and images are now in Anki.</li>
+      <li data-i18n="import.1"><strong>Double-click the <code>.apkg</code> file</strong> you downloaded. Anki opens and shows an import window. <span class="muted">(Or open Anki yourself and go to “File → Import”.)</span></li>
+      <li data-i18n="import.2"><strong>Turn on “Import any learning progress”</strong> in the import window if you exported your learning progress. <strong>Don't skip this:</strong> without it, all cards arrive as new, and importing again later won't fix it.</li>
+      <li data-i18n="import.3"><strong>Click “Import”.</strong> That's it: your cards, sub-decks and images are now in Anki.</li>
     </ol>
 
     <details class="manual">
-      <summary>Using the text file instead</summary>
+      <summary data-i18n="manual.summary">Using the text file instead</summary>
       <ol class="howto">
-        <li><strong>Unzip the download.</strong> <span class="muted">Mac: double-click it. Windows: right-click → “Extract All”.</span> You get a folder with a <code>.txt</code> file and an <code>attachments</code> folder.</li>
-        <li><strong>Import the cards.</strong> Open Anki, go to “File → Import” and choose the <code>.txt</code> file. Make sure “Allow HTML in fields” is checked, then click “Import”.</li>
+        <li data-i18n="manual.1"><strong>Unzip the download.</strong> <span class="muted">Mac: double-click it. Windows: right-click → “Extract All”.</span> You get a folder with a <code>.txt</code> file and an <code>attachments</code> folder.</li>
+        <li data-i18n="manual.2"><strong>Import the cards.</strong> Open Anki, go to “File → Import” and choose the <code>.txt</code> file. Make sure “Allow HTML in fields” is checked, then click “Import”.</li>
         <li>
-          <strong>Copy the images.</strong> Copy everything <em>inside</em> the <code>attachments</code> folder into Anki's media folder:
+          <span data-i18n="manual.3"><strong>Copy the images.</strong> Copy everything <em>inside</em> the <code>attachments</code> folder into Anki's media folder:</span>
           <div class="tabs" role="tablist">
             <button role="tab" id="tab-mac" aria-controls="panel-mac" aria-selected="true" type="button">Mac</button>
             <button role="tab" id="tab-win" aria-controls="panel-win" aria-selected="false" type="button">Windows</button>
@@ -135,38 +139,38 @@
           </div>
           <div class="tab-panel" role="tabpanel" id="panel-mac" aria-labelledby="tab-mac">
             <ol>
-              <li>In Finder, press <code>⌘ Cmd</code> + <code>⇧ Shift</code> + <code>G</code>.</li>
-              <li><span class="path">Paste <code>~/Library/Application Support/Anki2/User 1/collection.media</code> <button class="copy" type="button">Copy</button></span></li>
-              <li>Press Enter and paste the images there.</li>
+              <li data-i18n="manual.mac1">In Finder, press <code>⌘ Cmd</code> + <code>⇧ Shift</code> + <code>G</code>.</li>
+              <li><span class="path" data-i18n="manual.mac2">Paste <code>~/Library/Application Support/Anki2/User 1/collection.media</code> <button class="copy" type="button">Copy</button></span></li>
+              <li data-i18n="manual.enter">Press Enter and paste the images there.</li>
             </ol>
           </div>
           <div class="tab-panel" role="tabpanel" id="panel-win" aria-labelledby="tab-win" hidden>
             <ol>
-              <li>Press <code>Win</code> + <code>R</code>.</li>
-              <li><span class="path">Paste <code>%APPDATA%\Anki2\User 1\collection.media</code> <button class="copy" type="button">Copy</button></span></li>
-              <li>Press Enter and paste the images there.</li>
+              <li data-i18n="manual.win1">Press <code>Win</code> + <code>R</code>.</li>
+              <li><span class="path" data-i18n="manual.win2">Paste <code>%APPDATA%\Anki2\User 1\collection.media</code> <button class="copy" type="button">Copy</button></span></li>
+              <li data-i18n="manual.enter">Press Enter and paste the images there.</li>
             </ol>
           </div>
           <div class="tab-panel" role="tabpanel" id="panel-linux" aria-labelledby="tab-linux" hidden>
             <ol>
-              <li><span class="path">Open <code>~/.local/share/Anki2/User 1/collection.media</code> <button class="copy" type="button">Copy</button></span></li>
-              <li>Paste the images there.</li>
+              <li><span class="path" data-i18n="manual.linux1">Open <code>~/.local/share/Anki2/User 1/collection.media</code> <button class="copy" type="button">Copy</button></span></li>
+              <li data-i18n="manual.linux2">Paste the images there.</li>
             </ol>
           </div>
-          <p class="muted">If your Anki profile isn't called “User 1”, use its name instead.</p>
+          <p class="muted" data-i18n="manual.profile">If your Anki profile isn't called “User 1”, use its name instead.</p>
         </li>
       </ol>
     </details>
   </section>
 
   <section class="card about">
-    <img class="about-photo" src="nick.jpg" width="560" height="700" alt="Photo of Nick Werner" loading="lazy">
+    <img class="about-photo" src="nick.jpg" width="560" height="700" alt="Photo of Nick Werner" data-i18n-attr="alt:about.photo" loading="lazy">
     <div class="about-text">
-      <h2>Hey there <span aria-hidden="true">👋</span></h2>
-      <p>I'm Nick, I study business informatics at the Technical University of Munich (TUM).</p>
-      <p>I was stuck in the Noji app as well, which was super annoying, especially when their servers went down for multiple days. So I built this tool to make it easier to switch to Anki, and I'm super happy if it helped you :)</p>
+      <h2 data-i18n="about.title">Hey there <span aria-hidden="true">👋</span></h2>
+      <p data-i18n="about.1">I'm Nick, I study business informatics at the Technical University of Munich (TUM).</p>
+      <p data-i18n="about.2">I was stuck in the Noji app as well, which was super annoying, especially when their servers went down for multiple days. So I built this tool to make it easier to switch to Anki, and I'm super happy if it helped you :)</p>
       <div class="about-actions">
-        <a class="coffee-button" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" data-goatcounter-click="coffee-about" data-goatcounter-title="Coffee button (about)"><span aria-hidden="true">☕</span> Buy me a coffee</a>
+        <a class="coffee-button" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" data-goatcounter-click="coffee-about" data-goatcounter-title="Coffee button (about)" data-i18n="about.coffee"><span aria-hidden="true">☕</span> Buy me a coffee</a>
         <a class="social" href="https://www.instagram.com/nick.wrnr/" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.3" fill="currentColor"/></svg>
         </a>
@@ -178,73 +182,74 @@
   </section>
 
   <section class="card faq">
-    <h2>Questions</h2>
+    <h2 data-i18n="faq.title">Questions</h2>
     <details>
-      <summary>I can't find Export in Noji, or my deck can't be exported</summary>
-      <p>Noji only lets you export decks you created yourself. Decks you imported or duplicated from someone else can't be exported. This is a limit in Noji, not in this converter. See <a href="https://help.noji.io/en/articles/11524889-export-your-decks">Noji's help article on exporting</a>.</p>
+      <summary data-i18n="faq.export.q">I can't find Export in Noji, or my deck can't be exported</summary>
+      <p data-i18n="faq.export.a">Noji only lets you export decks you created yourself. Decks you imported or duplicated from someone else can't be exported. This is a limit in Noji, not in this converter. See <a href="https://help.noji.io/en/articles/11524889-export-your-decks">Noji's help article on exporting</a>.</p>
     </details>
     <details>
-      <summary>Is my deck uploaded anywhere?</summary>
-      <p>No. The conversion runs entirely in your browser, and your file is never sent to a server. The only thing the page loads from the internet are images that are missing from your export, and those come straight from Noji.</p>
+      <summary data-i18n="faq.upload.q">Is my deck uploaded anywhere?</summary>
+      <p data-i18n="faq.upload.a">No. The conversion runs entirely in your browser, and your file is never sent to a server. The only thing the page loads from the internet are images that are missing from your export, and those come straight from Noji.</p>
     </details>
     <details>
-      <summary>I already imported this deck before. Will I get duplicates?</summary>
-      <p>No. Importing the <code>.apkg</code> again updates the cards that are already there instead of adding them a second time. Their learning progress in Anki stays as it is.</p>
+      <summary data-i18n="faq.dupes.q">I already imported this deck before. Will I get duplicates?</summary>
+      <p data-i18n="faq.dupes.a">No. Importing the <code>.apkg</code> again updates the cards that are already there instead of adding them a second time. Their learning progress in Anki stays as it is.</p>
     </details>
     <details>
-      <summary>Some images show up as a broken picture in Anki</summary>
-      <p>With the <code>.apkg</code>, images are imported automatically. If you used the text file instead, make sure you copied the files from the <code>attachments</code> folder of this download into <code>collection.media</code>. Each card points to a file like <code>c4915ef6-….jpg</code>, and that exact file needs to be there. Files with other names (for example <code>409095344.jpg</code>) come from a different import and won't work for these cards.</p>
+      <summary data-i18n="faq.images.q">Some images show up as a broken picture in Anki</summary>
+      <p data-i18n="faq.images.a">With the <code>.apkg</code>, images are imported automatically. If you used the text file instead, make sure you copied the files from the <code>attachments</code> folder of this download into <code>collection.media</code>. Each card points to a file like <code>c4915ef6-….jpg</code>, and that exact file needs to be there. Files with other names (for example <code>409095344.jpg</code>) come from a different import and won't work for these cards.</p>
     </details>
     <details>
-      <summary>Can I use this from the command line instead?</summary>
-      <p>Yes. The same converter is available as a Python script on <a href="https://github.com/NickDerWerner/Noji-to-Anki">GitHub</a>.</p>
+      <summary data-i18n="faq.cli.q">Can I use this from the command line instead?</summary>
+      <p data-i18n="faq.cli.a">Yes. The same converter is available as a Python script on <a href="https://github.com/NickDerWerner/Noji-to-Anki">GitHub</a>.</p>
     </details>
     <details>
-      <summary>Does my learning progress carry over from Noji?</summary>
-      <p>Yes, if you exported with learning progress. Every card keeps its state (new, learning or review), its next due date, its interval and its ease. Cards you forgot recently stay in relearning, and frozen cards become suspended cards. When the deck is ready, the converter tells you how many cards keep their progress.</p>
+      <summary data-i18n="faq.progress.q">Does my learning progress carry over from Noji?</summary>
+      <p data-i18n="faq.progress.a">Yes, if you exported with learning progress. Every card keeps its state (new, learning or review), its next due date, its interval and its ease. Cards you forgot recently stay in relearning, and frozen cards become suspended cards. When the deck is ready, the converter tells you how many cards keep their progress.</p>
     </details>
     <details>
-      <summary>I forgot to turn on “Import any learning progress”. How do I fix it?</summary>
-      <p>In Anki, delete the deck you just imported (click the gear icon next to it, then “Delete”). Then import the <code>.apkg</code> again, this time with “Import any learning progress” turned on. Importing again without deleting first won't help: Anki sees that the cards already exist and leaves them as new.</p>
+      <summary data-i18n="faq.forgot.q">I forgot to turn on “Import any learning progress”. How do I fix it?</summary>
+      <p data-i18n="faq.forgot.a">In Anki, delete the deck you just imported (click the gear icon next to it, then “Delete”). Then import the <code>.apkg</code> again, this time with “Import any learning progress” turned on. Importing again without deleting first won't help: Anki sees that the cards already exist and leaves them as new.</p>
     </details>
     <details>
-      <summary>Why are so many cards due at once?</summary>
-      <p>Your cards are due on the same days as in Noji. If you haven't studied for a while, they are all overdue, just as they would be in Noji. Anki shows up to 200 reviews per day by default, so the pile gets spread over a few days. You can change this limit in the deck's options.</p>
+      <summary data-i18n="faq.due.q">Why are so many cards due at once?</summary>
+      <p data-i18n="faq.due.a">Your cards are due on the same days as in Noji. If you haven't studied for a while, they are all overdue, just as they would be in Noji. Anki shows up to 200 reviews per day by default, so the pile gets spread over a few days. You can change this limit in the deck's options.</p>
     </details>
     <details>
-      <summary>Where are my frozen cards?</summary>
-      <p>Frozen cards are suspended in Anki: they keep their progress but don't show up for review. To find them, open “Browse” and search for <code>is:suspended</code>. Select them and press “Toggle Suspend” to study them again.</p>
+      <summary data-i18n="faq.frozen.q">Where are my frozen cards?</summary>
+      <p data-i18n="faq.frozen.a">Frozen cards are suspended in Anki: they keep their progress but don't show up for review. To find them, open “Browse” and search for <code>is:suspended</code>. Select them and press “Toggle Suspend” to study them again.</p>
     </details>
     <details>
-      <summary>Is my review history or streak imported?</summary>
-      <p>No. Noji's export only contains each card's current state, not the list of your past reviews, so your streak and Noji statistics can't be carried over. So that Anki's FSRS scheduler can work with your cards right away, every learned card gets one estimated review on the day you last studied it in Noji.</p>
+      <summary data-i18n="faq.history.q">Is my review history or streak imported?</summary>
+      <p data-i18n="faq.history.a">No. Noji's export only contains each card's current state, not the list of your past reviews, so your streak and Noji statistics can't be carried over. So that Anki's FSRS scheduler can work with your cards right away, every learned card gets one estimated review on the day you last studied it in Noji.</p>
     </details>
     <details>
-      <summary>Can I keep studying in Noji and move over later?</summary>
-      <p>Yes, but progress is only taken over on the first import. If you import the same deck again later, Anki updates the card contents but keeps the progress it already has. To bring over newer progress from Noji, delete the deck in Anki first, then import the new export.</p>
+      <summary data-i18n="faq.later.q">Can I keep studying in Noji and move over later?</summary>
+      <p data-i18n="faq.later.a">Yes, but progress is only taken over on the first import. If you import the same deck again later, Anki updates the card contents but keeps the progress it already has. To bring over newer progress from Noji, delete the deck in Anki first, then import the new export.</p>
     </details>
     <details>
-      <summary>Does learning progress work with the text file download?</summary>
-      <p>No. Only the <code>.apkg</code> can carry learning progress. The text file always imports all cards as new.</p>
+      <summary data-i18n="faq.txt.q">Does learning progress work with the text file download?</summary>
+      <p data-i18n="faq.txt.a">No. Only the <code>.apkg</code> can carry learning progress. The text file always imports all cards as new.</p>
     </details>
   </section>
 </main>
 
 <dialog class="thanks" id="thanks" aria-labelledby="thanks-title">
   <div class="cup" aria-hidden="true">🎉</div>
-  <h2 id="thanks-title">Your deck is downloading</h2>
-  <p>Next, double-click the <code>.apkg</code> file to import it into Anki.</p>
-  <p>If this saved you some time, I'd be really happy about a coffee.</p>
-  <a class="coffee-button" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" id="thanks-coffee" data-goatcounter-click="coffee-popup" data-goatcounter-title="Coffee button (popup)"><span aria-hidden="true">☕</span> Buy me a coffee</a>
-  <form method="dialog"><button class="link-button" type="submit">No thanks, close</button></form>
+  <h2 id="thanks-title" data-i18n="thanks.title">Your deck is downloading</h2>
+  <p data-i18n="thanks.next">Next, double-click the <code>.apkg</code> file to import it into Anki.</p>
+  <p data-i18n="thanks.ask">If this saved you some time, I'd be really happy about a coffee.</p>
+  <a class="coffee-button" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" id="thanks-coffee" data-goatcounter-click="coffee-popup" data-goatcounter-title="Coffee button (popup)" data-i18n="thanks.coffee"><span aria-hidden="true">☕</span> Buy me a coffee</a>
+  <form method="dialog"><button class="link-button" type="submit" data-i18n="thanks.close">No thanks, close</button></form>
 </dialog>
 
 <footer>
-  Made by Nick Werner · <a href="https://github.com/NickDerWerner/Noji-to-Anki">Open source on GitHub</a><br>
-  Not affiliated with Noji or Anki.<br>
+  <span data-i18n="footer.made">Made by Nick Werner · <a href="https://github.com/NickDerWerner/Noji-to-Anki">Open source on GitHub</a></span><br>
+  <span data-i18n="footer.notAffiliated">Not affiliated with Noji or Anki.</span><br>
   <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz / Privacy</a>
 </footer>
 
+<script src="i18n.js"></script>
 <script src="vendor/fflate.js"></script>
 <script src="vendor/fzstd.js"></script>
 <script src="vendor/sql-wasm.js"></script>

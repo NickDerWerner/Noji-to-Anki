@@ -2,6 +2,7 @@
   'use strict';
 
   const $ = (id) => document.getElementById(id);
+  const { t, locale } = window.I18N;
   const picker = $('picker');
   const drop = $('drop');
   const fileInput = $('file');
@@ -28,7 +29,7 @@
     progress.hidden = view !== 'progress';
     result.hidden = view !== 'result';
     if (view !== 'picker') errorBox.hidden = true;
-    $('convert-title').textContent = view === 'result' ? 'Your deck is ready' : 'Convert it here';
+    $('convert-title').textContent = view === 'result' ? t('readyTitle') : t('convertTitle');
   }
 
   function setStep(id, detail) {
@@ -40,7 +41,7 @@
     if (id === 'download') {
       const li = steps[index];
       li.hidden = false;
-      li.textContent = `Downloading ${detail.total} missing ${detail.total === 1 ? 'image' : 'images'} from Noji (${detail.done} of ${detail.total})`;
+      li.textContent = t('downloadingCount', { total: detail.total, done: detail.done, images: t(detail.total === 1 ? 'image' : 'images') });
     }
   }
 
@@ -48,7 +49,7 @@
     steps.forEach((li) => li.classList.remove('done', 'active'));
     const downloadStep = steps.find((li) => li.dataset.step === 'download');
     downloadStep.hidden = true;
-    downloadStep.textContent = 'Downloading missing images';
+    downloadStep.textContent = t('downloading');
   }
 
   // Anonymous usage count (GoatCounter). Only the event name is sent, never anything from the deck.
@@ -62,7 +63,7 @@
   const CONVERTED_BEFORE_TRACKING = 30;
   let convertedCount = CONVERTED_BEFORE_TRACKING;
   function showConvertedCount() {
-    $('deck-count').textContent = convertedCount.toLocaleString('en-US');
+    $('deck-count').textContent = convertedCount.toLocaleString(locale);
   }
   fetch('https://nojitoanki.goatcounter.com/counter/converted.json')
     .then((res) => (res.ok ? res.json() : null))
@@ -115,19 +116,19 @@
       $('r-no-apkg').hidden = !!r.apkgBytes;
       $('r-progress').hidden = !(r.apkgBytes && r.progressCount);
       $('r-progress-title').textContent = r.progressCount === 1
-        ? '1 card keeps its learning progress.'
-        : `${r.progressCount.toLocaleString()} cards keep their learning progress.`;
+        ? t('progressOne')
+        : t('progressMany', { count: r.progressCount.toLocaleString(locale) });
 
-      $('r-cards').textContent = r.cardCount.toLocaleString();
-      $('r-decks').textContent = r.deckCount.toLocaleString();
+      $('r-cards').textContent = r.cardCount.toLocaleString(locale);
+      $('r-decks').textContent = r.deckCount.toLocaleString(locale);
       $('r-images').textContent = r.imageTotal === r.imagesReady
-        ? r.imageTotal.toLocaleString()
+        ? r.imageTotal.toLocaleString(locale)
         : `${r.imagesReady} / ${r.imageTotal}`;
 
       const failedBox = $('r-failed');
       failedBox.hidden = r.failed.length === 0;
       if (r.failed.length) {
-        $('r-failed-title').textContent = `${r.failed.length} of ${r.imageTotal} images couldn't be found.`;
+        $('r-failed-title').textContent = t('failedTitle', { count: r.failed.length, total: r.imageTotal });
         const list = $('r-failed-list');
         list.replaceChildren(...r.failed.slice(0, 5).map((name) => {
           const li = document.createElement('li');
@@ -136,7 +137,7 @@
         }));
         if (r.failed.length > 5) {
           const li = document.createElement('li');
-          li.textContent = `…and ${r.failed.length - 5} more`;
+          li.textContent = t('more', { count: r.failed.length - 5 });
           list.append(li);
         }
       }
@@ -147,7 +148,7 @@
     } catch (e) {
       console.error(e);
       track('conversion-failed', 'Conversion failed');
-      showError(e.message || 'Something went wrong while converting this file.');
+      showError(e.code ? t(`error.${e.code}`) : t('errorGeneric'));
     } finally {
       fileInput.value = '';
     }
@@ -209,10 +210,10 @@
     const text = button.previousElementSibling.textContent;
     try {
       await navigator.clipboard.writeText(text);
-      button.textContent = 'Copied';
+      button.textContent = t('copied');
     } catch (e) {
-      button.textContent = 'Select & copy';
+      button.textContent = t('selectCopy');
     }
-    setTimeout(() => { button.textContent = 'Copy'; }, 1500);
+    setTimeout(() => { button.textContent = t('copy'); }, 1500);
   }));
 })();

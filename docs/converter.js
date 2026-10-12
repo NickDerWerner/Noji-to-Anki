@@ -35,6 +35,13 @@
     return fileName.replace(/\.ofc$/i, '');
   }
 
+  // The code lets the page show the message in the visitor's language
+  function readError(code, message) {
+    const error = new Error(message);
+    error.code = code;
+    return error;
+  }
+
   // 1. Find the deck data and attachments inside the .ofc (a zip file)
   function readOfc(ofcBytes) {
     const wanted = ['deck_data.json', 'deck_export_data', 'attachments.zip'];
@@ -44,7 +51,7 @@
         filter: (f) => !isMacJunk(f.name) && wanted.includes(basename(f.name)),
       });
     } catch (e) {
-      throw new Error("This file doesn't look like a Noji export. Please choose the .ofc file you exported from Noji.");
+      throw readError('not-noji', "This file doesn't look like a Noji export. Please choose the .ofc file you exported from Noji.");
     }
 
     const found = {};
@@ -57,20 +64,20 @@
       try {
         deckJsonBytes = fzstd.decompress(found['deck_export_data']);
       } catch (e) {
-        throw new Error("The deck data inside this file couldn't be unpacked. The export may be damaged. Try exporting it from Noji again.");
+        throw readError('unpack', "The deck data inside this file couldn't be unpacked. The export may be damaged. Try exporting it from Noji again.");
       }
     } else {
-      throw new Error("No deck data found in this file. Please choose the .ofc file you exported from Noji.");
+      throw readError('no-data', "No deck data found in this file. Please choose the .ofc file you exported from Noji.");
     }
 
     let data;
     try {
       data = JSON.parse(new TextDecoder().decode(deckJsonBytes));
     } catch (e) {
-      throw new Error("The deck data couldn't be read. The export may be damaged. Try exporting it from Noji again.");
+      throw readError('unreadable', "The deck data couldn't be read. The export may be damaged. Try exporting it from Noji again.");
     }
     if (!Array.isArray(data)) {
-      throw new Error("The deck data has an unexpected format.");
+      throw readError('format', "The deck data has an unexpected format.");
     }
 
     return { data, attachmentsZip: found['attachments.zip'] || null };
