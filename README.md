@@ -1,21 +1,45 @@
-# Noji to Anki Converter
+# Noji to Anki
 
-Convert Noji `.ofc` export files into Anki-ready `.txt` import files with full image support and sub-deck hierarchy.
+Move your flashcards from the Noji app to Anki: cards, images, sub-decks and learning progress.
 
-> 🌐 **Easiest way: use the website at [nojitoanki.com](https://nojitoanki.com).** Nothing to install, and your deck never leaves your computer. The steps below are for running the converter yourself with Python.
+## 👉 Use the website: [nojitoanki.com](https://nojitoanki.com)
+
+**This is the way to convert your decks.** Open the website, drop in your Noji export and download a deck that's ready to import into Anki. That takes about a minute.
+
+*   **Nothing to install.** It works in any modern browser on Mac, Windows, Linux and phones.
+*   **Your deck never leaves your computer.** The conversion runs entirely in your browser, and your file is never uploaded anywhere.
+*   **Ready-to-import Anki deck (`.apkg`).** Double-click it and Anki imports the cards, sub-decks and images in one go. There's no copying of image folders.
+*   **Learning progress included.** If you export from Noji with learning progress, your cards keep their due dates, intervals and ease in Anki, and frozen cards stay paused (suspended).
+*   **In your language:** English, German, Portuguese (Brazil), Spanish, French and Italian.
+*   **Free and open source.** The website is the code in the [`docs/`](docs/) folder of this repository.
+
+## 📤 Exporting your deck from Noji
+
+1.  In Noji, open the deck and go to its **“Settings”**.
+2.  Choose **“Export deck”** and pick the **“OFC”** format (not CSV, which leaves out images). Sub-decks are included automatically.
+3.  **Turn on the option to include your learning progress** if you want to keep it in Anki.
+4.  Enter your email address. Noji emails you a download link once the file is ready.
+5.  Download the `.ofc` file **within 24 hours**, after that Noji deletes it.
+
+Noji only lets you export decks you created yourself, not decks you imported or duplicated. More details in [Noji's help article](https://help.noji.io/en/articles/11524889-export-your-decks).
+
+Then go to **[nojitoanki.com](https://nojitoanki.com)** and follow the steps there. When you import the `.apkg` into Anki, turn on **“Import any learning progress”** in the import window, otherwise all cards arrive as new.
+
+---
+
+## 🐍 Python script (legacy)
+
+> ⚠️ **You probably don't need this.** The Python script is the original version of the converter and is no longer the recommended way. It only creates a `.txt` file plus an image folder that you import by hand: **no `.apkg`, no learning progress.** Use **[nojitoanki.com](https://nojitoanki.com)** instead, unless you specifically want to convert from the command line.
 
 ⏱️ **Time needed:** about 5–10 minutes, even if you've never used a terminal before.
 
-> 💡 **Not a tech person? No problem!**
-> You can copy this entire README and paste it into an AI assistant like **ChatGPT**, **Claude**, or **Gemini**. Then tell it something like:
-> *"I want to convert my Noji deck to Anki using these instructions. I'm on [Mac/Windows/Linux]. Please guide me step by step."*
-> It will walk you through every step, and you can ask it questions whenever you get stuck.
+> 💡 **Not a tech person?** Then really, use the website. If you still want the script, you can paste this README into an AI assistant like ChatGPT, Claude or Gemini and ask it to guide you step by step.
 
-## 🛠 Prerequisites
+### 🛠 Prerequisites
 
 All you need is **Python 3.14 or newer**. That's it.
 
-### 🐍 Installing Python
+#### 🐍 Installing Python
 First, check whether a recent Python is already installed. Open a terminal (macOS: **Terminal**, Windows: **Command Prompt** or **PowerShell**) and run:
 ```bash
 python3 --version
@@ -44,7 +68,7 @@ If you see `Python 3.14` or higher (for example `Python 3.14.2`), you're all set
     ```
     Many Linux versions still ship an older Python. If yours is older than 3.14, see the note below.
 
-### ⚙️ Using an older Python (3.13 or below)
+#### ⚙️ Using an older Python (3.13 or below)
 Noji compresses its deck data with Zstandard (`zstd`). Python 3.14+ can unpack this on its own. Older versions need one extra thing. Pick **one** of these:
 
 *   **Option A:** install the `zstandard` package for Python:
@@ -56,16 +80,7 @@ Noji compresses its deck data with Zstandard (`zstd`). Python 3.14+ can unpack t
     - **Windows**: download `zstd.exe` from the [official Zstandard releases](https://github.com/facebook/zstd/releases), or run `scoop install zstd` or `choco install zstd`.
     - **Linux**: `sudo apt install zstd`
 
-## 📤 Exporting your deck from Noji
-
-1.  In Noji, open the deck and go to its **Settings**.
-2.  Choose **Export** and pick the **OFC** format (not CSV, which leaves out images). Sub-decks are included automatically.
-3.  Enter your email address. Noji emails you a download link once the file is ready.
-4.  Download the `.ofc` file **within 24 hours**, after that Noji deletes it.
-
-Noji only lets you export decks you created yourself, not decks you imported or duplicated. More details in [Noji's help article](https://help.noji.io/en/articles/11524889-export-your-decks).
-
-## 🚀 Usage
+### 🚀 Usage
 
 1.  Place your `.ofc` file (or the extracted folder) in this directory.
 2.  Run the converter:
@@ -75,7 +90,7 @@ Noji only lets you export decks you created yourself, not decks you imported or 
     (don't forget the quotes "" around the filename!)
 3.  A new folder named `anki_your_deck_name` will be created.
 
-### Optional: Add a label to every card
+#### Optional: Add a label to every card
 **Most people can skip this step.** The converter above is all you need.
 
 `prepend_label.py` is a separate helper script that only runs if you start it yourself. It adds the same text to the start of the front side of every card. This is handy if you study cards from several subjects mixed together and want to see at a glance which subject a card belongs to:
@@ -92,16 +107,16 @@ python3 prepend_label.py "anki_your_deck_name/anki_import_your_deck_name.txt" "S
 *   Put a space at the end of the label (`"Sachenrecht: "`), so it doesn't stick to the card text.
 *   Running it twice won't add the label twice.
 
-## 📥 Importing into Anki
+### 📥 Importing into Anki
 
-### 1. Import the Cards
+#### 1. Import the Cards
 1.  Open Anki.
 2.  Go to **File > Import**.
 3.  Select the `.txt` file found inside the `anki_...` folder.
 4.  Ensure **"Allow HTML in fields"** is checked.
 5.  Anki will automatically create the decks and sub-decks for you.
 
-### 2. Move the Media (Images)
+#### 2. Move the Media (Images)
 For images to display, you must move the contents of the `attachments` folder into Anki's internal media folder:
 
 *   **macOS**:
@@ -116,22 +131,22 @@ For images to display, you must move the contents of the `attachments` folder in
     3.  Navigate to: `Anki2\User 1\collection.media`
     4.  Paste the files there.
 
-## 🩹 Troubleshooting
+### 🩹 Troubleshooting
 
-### Images show up as a broken picture icon in Anki
+#### Images show up as a broken picture icon in Anki
 
 *   At the end, the script prints `Images: X of Y ready`. If some are missing, it downloads them from Noji automatically (this needs an internet connection). Images that still fail are listed in a warning.
 *   Make sure you copied the files from the `attachments` folder that the script created. Each card points to a file name like `c4915ef6-44f7-468f-8c82-eff8ba8a41a5.jpg`, and that exact file must be in `collection.media`. Files with other names (for example `409095344.jpg`) come from a different import and won't work for these cards.
 
-### Lots of extra decks named `Deck+`, `Deck++`, ... appeared in Anki
+#### Lots of extra decks named `Deck+`, `Deck++`, ... appeared in Anki
 Older versions of the converter caused this for some decks. Delete the imported decks in Anki, convert your `.ofc` again with the current version, and import the new file.
 
-## 📁 Repository Structure
-*   `noji_to_anki.py`: The main conversion script.
-*   `prepend_label.py`: Optional helper that adds a label to the front of every card.
-*   `README.md`: This instruction guide.
+## 📁 Repository structure
+*   `docs/`: the website at [nojitoanki.com](https://nojitoanki.com), served by GitHub Pages. To try it locally, run `python3 -m http.server` inside `docs/` and open `http://localhost:8000`.
+    *   `converter.js`: reads the Noji export and builds the cards; `apkg.js`: writes the Anki deck; `app.js`: the page logic.
+    *   `i18n.js` and `lang/`: the translations.
+*   `noji_to_anki.py`: the legacy Python converter.
+*   `prepend_label.py`: optional helper for the Python converter that adds a label to the front of every card.
 
-## ❗️Tipps❗️
-If you are finding all those steps too complex, remember: you can paste this whole README into ChatGPT, Claude, or Gemini and ask it to guide you (see the note at the top).
-
-If there is any issue, feel free to contact me at: nickeliaswerner@gmail.com
+## ✉️ Contact
+If there is any issue, open an issue on GitHub or contact me at: nickeliaswerner@gmail.com
