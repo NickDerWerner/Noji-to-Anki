@@ -68,7 +68,8 @@ h1 { font-size: clamp(28px, 6vw, 40px); line-height: 1.15; letter-spacing: -0.02
   border: 1px solid var(--border); background: var(--surface);
   padding: 4px 12px; border-radius: 999px;
 }
-.badge-count { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
+.counter { text-align: center; margin: 0 0 20px; }
+.badge-count { display: inline-block; font-size: 16px; padding: 6px 16px; color: var(--accent); background: var(--accent-soft); border-color: transparent; }
 .badge-count b { font-variant-numeric: tabular-nums; }
 
 .card {
