@@ -9,6 +9,10 @@
 <link rel="canonical" href="https://nojitoanki.com/">
 <link rel="alternate" hreflang="en" href="https://nojitoanki.com/?lang=en">
 <link rel="alternate" hreflang="de" href="https://nojitoanki.com/?lang=de">
+<link rel="alternate" hreflang="pt-BR" href="https://nojitoanki.com/?lang=pt-BR">
+<link rel="alternate" hreflang="es" href="https://nojitoanki.com/?lang=es">
+<link rel="alternate" hreflang="fr" href="https://nojitoanki.com/?lang=fr">
+<link rel="alternate" hreflang="it" href="https://nojitoanki.com/?lang=it">
 <link rel="alternate" hreflang="x-default" href="https://nojitoanki.com/">
 <meta name="theme-color" content="#3b5bdb">
 <meta property="og:type" content="website">
@@ -28,7 +32,7 @@
 <header>
   <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="18" height="22" rx="4" fill="#b8c2ff"/><rect x="11" y="3" width="18" height="22" rx="4" fill="#3b5bdb"/></svg>
   <span class="brand">Noji to Anki</span>
-  <a class="lang-switch" id="lang-switch" href="?lang=de" data-i18n="header.lang">DE</a>
+  <label class="lang-switch"><span id="lang-current" aria-hidden="true">EN</span><select id="lang-select" aria-label="Language"><option value="en">English</option></select></label>
   <a class="header-coffee" href="https://buymeacoffee.com/nickwerner" target="_blank" rel="noopener" data-goatcounter-click="coffee-header" data-goatcounter-title="Coffee button (header)" data-i18n="header.coffee"><span aria-hidden="true">☕</span> Buy me a coffee</a>
 </header>
 
@@ -44,7 +48,7 @@
     <h2 data-i18n="export.title"><span class="num">1</span> Export your deck from Noji</h2>
     <ol class="howto">
       <li data-i18n="export.1">In Noji, open the deck you want to move and go to its <strong>“Settings”</strong>.</li>
-      <li data-i18n="export.2">Choose <strong>“Export”</strong> and pick the <strong>“OFC”</strong> format. <span class="muted">(Not CSV: CSV leaves out images.)</span> Exporting a deck includes all its sub-decks.</li>
+      <li data-i18n="export.2">Choose <strong>“Export deck”</strong> and pick the <strong>“OFC”</strong> format. <span class="muted">(Not CSV: CSV leaves out images.)</span> Exporting a deck includes all its sub-decks.</li>
       <li data-i18n="export.3"><strong>Turn on the option to include your learning progress.</strong> Your cards then keep their due dates and intervals in Anki instead of starting over as new cards.</li>
       <li data-i18n="export.4">Enter your email address. Noji emails you a download link once the file is ready, which can take a few minutes for big decks.</li>
       <li data-i18n="export.5"><strong>Download the <code>.ofc</code> file from the email within 24 hours.</strong> After that, Noji deletes it.</li>
@@ -184,7 +188,7 @@
   <section class="card faq">
     <h2 data-i18n="faq.title">Questions</h2>
     <details>
-      <summary data-i18n="faq.export.q">I can't find Export in Noji, or my deck can't be exported</summary>
+      <summary data-i18n="faq.export.q">I can't find “Export deck” in Noji, or my deck can't be exported</summary>
       <p data-i18n="faq.export.a">Noji only lets you export decks you created yourself. Decks you imported or duplicated from someone else can't be exported. This is a limit in Noji, not in this converter. See <a href="https://help.noji.io/en/articles/11524889-export-your-decks">Noji's help article on exporting</a>.</p>
     </details>
     <details>
@@ -249,6 +253,11 @@
   <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz / Privacy</a>
 </footer>
 
+<script src="lang/de.js"></script>
+<script src="lang/pt-BR.js"></script>
+<script src="lang/es.js"></script>
+<script src="lang/fr.js"></script>
+<script src="lang/it.js"></script>
 <script src="i18n.js"></script>
 <script src="vendor/fflate.js"></script>
 <script src="vendor/fzstd.js"></script>
