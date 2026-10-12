@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   --bg: #f6f6f3;
   --surface: #ffffff;
   --text: #1c1c1e;
@@ -17,25 +18,6 @@
   --radius: 14px;
   --coffee: #ffdd00;
   --coffee-text: #1c1c1e;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #121214;
-    --surface: #1b1b1f;
-    --text: #ececee;
-    --muted: #9d9da5;
-    --border: #2d2d33;
-    --accent: #7d93ff;
-    --accent-text: #0f1330;
-    --accent-soft: #1f2440;
-    --ok: #69db7c;
-    --ok-soft: #15291a;
-    --warn: #ffc069;
-    --warn-soft: #2e2412;
-    --error: #ff8787;
-    --error-soft: #331a1a;
-    --code-bg: #26262b;
-  }
 }
 
 * { box-sizing: border-box; }
