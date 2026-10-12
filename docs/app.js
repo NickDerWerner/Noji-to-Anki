@@ -58,6 +58,23 @@
     } catch (e) { /* counting must never break the converter */ }
   }
 
+  // "N decks converted" in the hero: conversions before tracking started plus GoatCounter's public count
+  const CONVERTED_BEFORE_TRACKING = 30;
+  let convertedCount = CONVERTED_BEFORE_TRACKING;
+  function showConvertedCount() {
+    $('deck-count').textContent = convertedCount.toLocaleString('en-US');
+  }
+  fetch('https://nojitoanki.goatcounter.com/counter/converted.json')
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      const tracked = data ? parseInt(String(data.count).replace(/\D/g, ''), 10) : NaN;
+      if (tracked > 0) {
+        convertedCount += tracked;
+        showConvertedCount();
+      }
+    })
+    .catch(() => { /* keep the starting number */ });
+
   function showError(message) {
     show('picker');
     $('error-text').textContent = message;
@@ -121,6 +138,8 @@
       }
       show('result');
       track('converted', 'Deck converted');
+      convertedCount += 1;
+      showConvertedCount();
     } catch (e) {
       console.error(e);
       track('conversion-failed', 'Conversion failed');
