@@ -41,16 +41,15 @@ code {
 header { padding-top: 28px; display: flex; align-items: center; gap: 10px; font-weight: 650; }
 header svg { width: 28px; height: 28px; }
 
-.hero { padding: 40px 0 28px; }
+.hero { padding: 24px 0 16px; }
 h1 { font-size: clamp(28px, 6vw, 40px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 12px; }
 .hero p { margin: 0; color: var(--muted); font-size: 18px; }
-.badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .badge {
   font-size: 14px; color: var(--muted);
   border: 1px solid var(--border); background: var(--surface);
   padding: 4px 12px; border-radius: 999px;
 }
-.counter { text-align: center; margin: 0 0 20px; }
+.counter { text-align: center; margin: 0 0 16px; }
 .badge-count { display: inline-block; font-size: 16px; padding: 6px 16px; color: var(--accent); background: var(--accent-soft); border-color: transparent; }
 .badge-count b { font-variant-numeric: tabular-nums; }
 
