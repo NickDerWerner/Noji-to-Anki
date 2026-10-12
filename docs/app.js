@@ -113,6 +113,10 @@
       $('r-file').textContent = link.download;
       $('zip-option').hidden = !r.apkgBytes;
       $('r-no-apkg').hidden = !!r.apkgBytes;
+      $('r-progress').hidden = !(r.apkgBytes && r.progressCount);
+      $('r-progress-title').textContent = r.progressCount === 1
+        ? '1 card keeps its learning progress.'
+        : `${r.progressCount.toLocaleString()} cards keep their learning progress.`;
 
       $('r-cards').textContent = r.cardCount.toLocaleString();
       $('r-decks').textContent = r.deckCount.toLocaleString();

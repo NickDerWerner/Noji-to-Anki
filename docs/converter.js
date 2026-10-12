@@ -77,6 +77,28 @@
   }
 
   // 2. Build the Anki rows and collect the images the cards use
+  // Noji's learning progress for one card, if the export includes it (null = new card)
+  function readProgress(progress, settings) {
+    if (!progress) return null;
+    const frozen = !!progress.frozen;
+    const state = progress.learning_state;
+    const due = Date.parse(progress.next_review_at);
+    if (!state || state === 'new' || !Number.isFinite(due)) return frozen ? { state: 'new', frozen } : null;
+    const steps = String((settings && settings.steps_in_minutes) || '').trim().split(/\s+/).filter(Boolean).length || 1;
+    // A forgotten review card goes back to "learning" but keeps its interval and ease (relearning in Anki)
+    const relearning = state !== 'graduated' && progress.learning_steps_index == null && progress.ease_factor != null;
+    return {
+      state: state === 'graduated' ? 'review' : relearning ? 'relearning' : 'learning',
+      due,
+      frozen,
+      // Noji stores intervals in minutes and ease in percent (250 = 2.5x)
+      intervalMinutes: progress.interval || 0,
+      intervalDays: progress.interval ? Math.max(1, Math.round(progress.interval / 1440)) : 0,
+      ease: progress.ease_factor ? Math.round(progress.ease_factor * 10) : 2500,
+      stepsLeft: Math.max(1, steps - (progress.learning_steps_index || 0)),
+    };
+  }
+
   function buildCards(data, label) {
     const deckMap = new Map(data.map((deck) => [String(deck.id), deck.name]));
 
@@ -114,7 +136,8 @@
         if (label && !front.startsWith(label)) front = label + front;
         // The Noji note id keeps re-imports from creating duplicates in Anki
         const guid = note.id !== undefined && note.id !== null ? `noji-${note.id}` : `noji-${deck.id}-${notes.length}`;
-        notes.push({ guid, front, back, deckName });
+        const progress = readProgress((note.progresses || [])[0], (deck.settings || [])[0]);
+        notes.push({ guid, front, back, deckName, progress });
       }
     }
 
@@ -127,7 +150,9 @@
       notes.map((n) => `${n.front}\t${n.back}\t${n.deckName}\n`).join('');
     // Decks with the same name end up as one deck in Anki
     const deckCount = new Set(data.map(fullDeckName)).size;
-    return { txt, notes, cardCount: notes.length, deckCount, mediaUrls };
+    // Cards that arrive in Anki as learning or review cards instead of new
+    const progressCount = notes.filter((n) => n.progress && n.progress.state !== 'new').length;
+    return { txt, notes, cardCount: notes.length, deckCount, progressCount, mediaUrls };
   }
 
   // 3. Take the images the cards use out of attachments.zip
@@ -202,7 +227,7 @@
 
     onStep('cards');
     await tick();
-    const { txt, notes, cardCount, deckCount, mediaUrls } = buildCards(data, label);
+    const { txt, notes, cardCount, deckCount, progressCount, mediaUrls } = buildCards(data, label);
 
     onStep('images');
     await tick();
@@ -229,6 +254,7 @@
       zipName: `anki_${baseName}.zip`,
       txtName: `anki_import_${baseName}.txt`,
       cardCount,
+      progressCount,
       deckCount,
       imageTotal: mediaUrls.size,
       imagesReady: mediaUrls.size - failed.length,

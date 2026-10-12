@@ -49,7 +49,7 @@
       <li>Enter your email address. Noji emails you a download link once the file is ready, which can take a few minutes for big decks.</li>
       <li><strong>Download the <code>.ofc</code> file from the email within 24 hours.</strong> After that, Noji deletes it.</li>
     </ol>
-    <p class="muted step-note">Noji also offers to include your learning progress. You can leave that off: your cards arrive in Anki as new cards either way.</p>
+    <p class="muted step-note"><strong>Tip:</strong> turn on <em>learning progress</em> when exporting. Your cards then keep their due dates and intervals in Anki instead of starting over as new cards.</p>
   </section>
 
   <section class="card" id="step-convert">
@@ -98,6 +98,10 @@
         <button class="link-button" id="again" type="button">Convert another file</button>
       </div>
       <p class="file-name"><span id="r-file"></span><span id="zip-option"> · <a id="download-zip" href="#" download>or download as text file + images (.zip)</a></span></p>
+      <div class="notice ok" id="r-progress" hidden>
+        <p><strong id="r-progress-title"></strong></p>
+        <p>When you import, tick <em>Include reviews</em> in Anki's import window. Otherwise every card arrives as new.</p>
+      </div>
       <div class="notice warn" id="r-no-apkg" hidden>
         <p>Your browser couldn't create an Anki deck file, so this download is a text file + images instead. See <em>Using the text file instead</em> below.</p>
       </div>
@@ -118,6 +122,7 @@
     <h2><span class="num">3</span> Import into Anki</h2>
     <ol class="howto">
       <li><strong>Double-click the <code>.apkg</code> file</strong> you downloaded. Anki opens and shows an import window. <span class="muted">(Or open Anki yourself and go to <em>File → Import</em>.)</span></li>
+      <li><strong>Exported with learning progress?</strong> Tick <em>Include reviews</em> in the import window, so your cards keep their progress.</li>
       <li><strong>Click <em>Import</em>.</strong> That's it: your cards, sub-decks and images are now in Anki.</li>
     </ol>
 
@@ -182,6 +187,11 @@
     <details>
       <summary>I can't find Export in Noji, or my deck can't be exported</summary>
       <p>Noji only lets you export decks you created yourself. Decks you imported or duplicated from someone else can't be exported. This is a limit in Noji, not in this converter. See <a href="https://help.noji.io/en/articles/11524889-export-your-decks">Noji's help article on exporting</a>.</p>
+    </details>
+    <details>
+      <summary>Does my learning progress carry over?</summary>
+      <p>Yes, if you turn on <em>learning progress</em> when exporting from Noji and tick <em>Include reviews</em> when importing into Anki. Every card keeps its state (new, learning or review), its next due date, its interval and its ease. Frozen cards become suspended cards in Anki.</p>
+      <p>Noji doesn't export your full review history, only each card's current state. So that Anki's FSRS scheduler can work with your cards right away, every learned card gets one estimated review on the day you last reviewed it in Noji. This only works with the <code>.apkg</code> download, not with the text file.</p>
     </details>
     <details>
       <summary>Is my deck uploaded anywhere?</summary>

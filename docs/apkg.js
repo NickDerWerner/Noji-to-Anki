@@ -98,10 +98,73 @@
     return parseInt(hex, 16);
   }
 
-  // notes: [{ guid, front, back, deckName }], media: Map(filename -> bytes)
+  const DAY_MS = 86400000;
+  const ROLLOVER_HOUR = 4; // Anki's default: a new day starts at 4 am
+
+  // Start of the current Anki day (local time), used as the collection's creation time,
+  // so "today" is day 0 and review due dates are days relative to it
+  function ankiDayStart(nowMs) {
+    const d = new Date(nowMs);
+    d.setHours(ROLLOVER_HOUR, 0, 0, 0);
+    if (d.getTime() > nowMs) d.setDate(d.getDate() - 1);
+    return d.getTime();
+  }
+
+  // Calendar days between two moments in local time
+  function localDayDiff(fromMs, toMs) {
+    const day = (ms) => { const d = new Date(ms); return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY_MS; };
+    return day(toMs) - day(fromMs);
+  }
+
+  // Anki card columns (type, queue, due, ivl, factor, left) for a card's progress
+  function scheduling(progress, newPosition, dayStartMs, nowMs) {
+    const card = { type: 0, queue: 0, due: newPosition, ivl: 0, factor: 0, left: 0 };
+    if (progress && progress.state === 'review') {
+      Object.assign(card, {
+        type: 2, queue: 2, due: localDayDiff(dayStartMs, progress.due),
+        ivl: progress.intervalDays, factor: progress.ease,
+      });
+    } else if (progress && (progress.state === 'learning' || progress.state === 'relearning')) {
+      // Learning steps of a day or more are scheduled by day, shorter ones by timestamp
+      const byDay = progress.due - nowMs >= DAY_MS;
+      const relearning = progress.state === 'relearning';
+      Object.assign(card, {
+        type: relearning ? 3 : 1, queue: byDay ? 3 : 1,
+        due: byDay ? localDayDiff(dayStartMs, progress.due) : Math.floor(progress.due / 1000),
+        ivl: relearning ? progress.intervalDays : 0, factor: progress.ease,
+        left: relearning ? 1 : progress.stepsLeft, // Anki relearns in one step by default
+      });
+    }
+    if (progress && progress.frozen) card.queue = -1; // frozen in Noji = suspended in Anki
+    return card;
+  }
+
+  // Noji exports a card's current state but not its review history. Anki's FSRS needs at
+  // least one past review to work out how well a card is known, so learned cards get an
+  // estimated entry: a "Good" on the day of the last review (next review minus interval),
+  // plus the "Again" for cards that were forgotten and are being relearned.
+  // Rows: [time ms, ease, ivl, lastIvl, factor]
+  function estimatedReviews(progress, nowMs) {
+    if (!progress || !progress.intervalDays) return [];
+    const ivl = progress.intervalDays;
+    const intervalMs = progress.intervalMinutes * 60000;
+    if (progress.state === 'review') {
+      // Noji rounds the next review to the start of a day, so the last review was up to a day later
+      return [[Math.min(progress.due - intervalMs + DAY_MS / 2, nowMs), 3, ivl, 0, progress.ease]];
+    }
+    if (progress.state === 'relearning') {
+      const lapse = Math.min(progress.due - 60000, nowMs); // Noji shows a forgotten card again after 1 minute
+      // Anki and Noji lower the ease by 20 percentage points on a lapse
+      return [[lapse - intervalMs, 3, ivl, 0, progress.ease + 200], [lapse, 1, -60, ivl, progress.ease]];
+    }
+    return [];
+  }
+
+  // notes: [{ guid, front, back, deckName, progress }], media: Map(filename -> bytes)
   async function buildApkg(SQL, notes, media) {
     const nowMs = Date.now();
     const now = Math.floor(nowMs / 1000);
+    const dayStartMs = ankiDayStart(nowMs);
 
     // One Anki deck per full deck name, plus any missing parents ("A::B" needs "A")
     const deckIds = new Map();
@@ -128,23 +191,33 @@
     try {
       db.run(SCHEMA);
       db.run('INSERT INTO col VALUES (1, ?, ?, ?, 11, 0, 0, 0, ?, ?, ?, ?, ?)', [
-        now, nowMs, nowMs, JSON.stringify(conf), JSON.stringify({ [MODEL_ID]: modelObject(firstDeckId, now) }),
+        Math.floor(dayStartMs / 1000), nowMs, nowMs, JSON.stringify(conf), JSON.stringify({ [MODEL_ID]: modelObject(firstDeckId, now) }),
         JSON.stringify(decks), JSON.stringify(DECK_CONFIG), '{}',
       ]);
 
       const insertNote = db.prepare('INSERT INTO notes VALUES (?, ?, ?, ?, -1, \'\', ?, ?, ?, 0, \'\')');
-      const insertCard = db.prepare('INSERT INTO cards VALUES (?, ?, ?, 0, ?, -1, 0, 0, ?, 0, 0, 0, 0, 0, 0, 0, 0, \'\')');
+      const insertCard = db.prepare('INSERT INTO cards VALUES (?, ?, ?, 0, ?, -1, ?, ?, ?, ?, ?, 0, 0, ?, 0, 0, 0, \'\')');
+      const insertReview = db.prepare('INSERT INTO revlog VALUES (?, ?, -1, ?, ?, ?, ?, 0, 1)');
+      const usedReviewIds = new Set();
       db.run('BEGIN');
       for (let i = 0; i < notes.length; i++) {
         const n = notes[i];
         const sortField = stripHtml(n.front);
         const noteId = nowMs + i;
         insertNote.run([noteId, n.guid, MODEL_ID, now, `${n.front}\x1f${n.back}`, sortField, await checksum(sortField)]);
-        insertCard.run([noteId, noteId, deckIds.get(n.deckName), now, i + 1]);
+        const c = scheduling(n.progress, i + 1, dayStartMs, nowMs);
+        insertCard.run([noteId, noteId, deckIds.get(n.deckName), now, c.type, c.queue, c.due, c.ivl, c.factor, c.left]);
+        for (const [time, ease, ivl, lastIvl, factor] of estimatedReviews(n.progress, nowMs)) {
+          let id = Math.round(time); // the review id is its timestamp and must be unique
+          while (usedReviewIds.has(id)) id++;
+          usedReviewIds.add(id);
+          insertReview.run([id, noteId, ease, ivl, lastIvl, factor]);
+        }
       }
       db.run('COMMIT');
       insertNote.free();
       insertCard.free();
+      insertReview.free();
 
       const mediaIndex = {};
       const entries = { 'collection.anki2': [db.export(), { level: 6 }] };
