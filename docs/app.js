@@ -62,22 +62,29 @@
     } catch (e) { /* counting must never break the converter */ }
   }
 
-  // "N decks converted" in the hero: conversions before tracking started plus GoatCounter's public count
+  // "N decks converted" in the hero: conversions before tracking started plus GoatCounter's
+  // count. Ad blockers often block goatcounter.com, so stats.json (refreshed weekly by a
+  // GitHub Action) holds a recent copy on our own domain; the higher of the two wins.
   const CONVERTED_BEFORE_TRACKING = 30;
-  let convertedCount = CONVERTED_BEFORE_TRACKING;
+  let tracked = 0;
+  let convertedHere = 0;
   function showConvertedCount() {
-    $('deck-count').textContent = convertedCount.toLocaleString(locale);
+    $('deck-count').textContent = (CONVERTED_BEFORE_TRACKING + tracked + convertedHere).toLocaleString(locale);
   }
-  fetch('https://nojitoanki.goatcounter.com/counter/converted.json')
-    .then((res) => (res.ok ? res.json() : null))
-    .then((data) => {
-      const tracked = data ? parseInt(String(data.count).replace(/\D/g, ''), 10) : NaN;
-      if (tracked > 0) {
-        convertedCount += tracked;
-        showConvertedCount();
-      }
-    })
-    .catch(() => { /* keep the starting number */ });
+  function useCount(url, read) {
+    fetch(url, { cache: 'no-cache' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const count = data ? parseInt(String(read(data)).replace(/\D/g, ''), 10) : NaN;
+        if (count > tracked) {
+          tracked = count;
+          showConvertedCount();
+        }
+      })
+      .catch(() => { /* keep the number we have */ });
+  }
+  useCount('stats.json', (data) => data.converted);
+  useCount('https://nojitoanki.goatcounter.com/counter/converted.json', (data) => data.count);
 
   function showError(message) {
     show('picker');
@@ -146,7 +153,7 @@
       }
       show('result');
       track('converted', 'Deck converted');
-      convertedCount += 1;
+      convertedHere += 1;
       showConvertedCount();
     } catch (e) {
       console.error(e);

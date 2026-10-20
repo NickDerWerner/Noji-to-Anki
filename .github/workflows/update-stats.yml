@@ -1,0 +1,38 @@
+# Copies the "decks converted" count from GoatCounter into docs/stats.json once a week.
+# The website reads it from its own domain, so visitors with ad blockers (which block
+# goatcounter.com) still see a recent number.
+name: Update converted-decks count
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # Mondays, 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the count from GoatCounter
+        run: |
+          count=$(curl -fsS https://nojitoanki.goatcounter.com/counter/converted.json | jq -r .count | tr -cd '0-9')
+          if [ -z "$count" ]; then echo "No count received"; exit 1; fi
+          printf '{"converted": %s}\n' "$count" > docs/stats.json
+          cat docs/stats.json
+
+      - name: Commit if it changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet; then echo "Count unchanged"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Update converted-decks count"
+          git push
+          # Pushes made by this workflow don't always start a Pages build, so ask for one
+          gh api -X POST "repos/${{ github.repository }}/pages/builds" || true
