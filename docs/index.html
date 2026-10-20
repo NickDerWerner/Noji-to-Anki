@@ -37,6 +37,15 @@
 </header>
 
 <main>
+  <div class="notice warn inapp" id="inapp" hidden>
+    <p><strong id="inapp-title"></strong></p>
+    <p id="inapp-text"></p>
+    <p id="inapp-how"></p>
+    <div class="inapp-actions">
+      <a class="inapp-button" id="inapp-chrome" href="#" hidden></a>
+      <button class="inapp-button" id="inapp-copy" type="button"></button>
+    </div>
+  </div>
   <section class="hero">
     <h1 data-i18n="hero.title">Convert your Noji flashcards to Anki for free</h1>
     <p data-i18n="hero.text">Your cards, images and sub-decks, ready to import into Anki in about a minute.</p>
@@ -59,6 +68,7 @@
     <h2><span class="num">2</span> <span id="convert-title" data-i18n="convert.title">Convert it here</span></h2>
 
     <div id="picker">
+      <p class="mobile-tip" id="mobile-tip" hidden></p>
       <label class="drop" id="drop">
         <!-- No accept=".ofc" filter: iOS greys out .ofc files because it doesn't know the file type -->
         <input type="file" id="file">

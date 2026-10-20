@@ -172,6 +172,48 @@
   window.addEventListener('dragover', (e) => e.preventDefault());
   window.addEventListener('drop', (e) => e.preventDefault());
 
+  // Downloads often fail in the browsers built into apps like Instagram or TikTok,
+  // so point those visitors to Safari or Chrome
+  const ua = navigator.userAgent || '';
+  const isAndroid = /Android/i.test(ua);
+  const isIos = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const IN_APP = [
+    [/Instagram/i, 'Instagram'], [/FBAN|FBAV|FB_IAB|FBIOS|MessengerForiOS/i, 'Facebook'],
+    [/musical_ly|BytedanceWebview|TikTok|trill_/i, 'TikTok'], [/Snapchat/i, 'Snapchat'],
+    [/LinkedInApp/i, 'LinkedIn'], [/Pinterest/i, 'Pinterest'], [/\bLine\//, 'LINE'],
+    [/Twitter/i, 'X'], [/GSA\//, 'Google'],
+  ];
+  const inApp = IN_APP.find(([pattern]) => pattern.test(ua));
+  const genericWebView = isAndroid && /; wv\)/.test(ua);
+  if (inApp || genericWebView) {
+    $('inapp-title').textContent = t('inappTitle');
+    $('inapp-text').textContent = inApp ? t('inappText', { app: inApp[1] }) : t('inappTextUnknown');
+    $('inapp-how').textContent = t(isAndroid ? 'inappHowAndroid' : 'inappHowIos');
+    if (isAndroid) {
+      const chrome = $('inapp-chrome');
+      chrome.href = `intent://${location.host}${location.pathname}${location.search}#Intent;scheme=https;package=com.android.chrome;end`;
+      chrome.textContent = t('inappChrome');
+      chrome.hidden = false;
+    }
+    const copy = $('inapp-copy');
+    copy.textContent = t('inappCopy');
+    copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(location.href);
+        copy.textContent = t('inappCopied');
+      } catch (e) {
+        window.prompt(t('inappCopy'), location.href);
+      }
+    });
+    $('inapp').hidden = false;
+  }
+
+  // On phones, mention that a computer is easier (Anki imports the .apkg with a double-click there)
+  if (isIos || isAndroid) {
+    $('mobile-tip').textContent = t('mobileTip');
+    $('mobile-tip').hidden = false;
+  }
+
   // After the first download, thank the user and point to Buy Me a Coffee (once per visit)
   const thanks = $('thanks');
   let thanksShown = false;

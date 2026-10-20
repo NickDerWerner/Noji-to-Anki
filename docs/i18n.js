@@ -30,6 +30,15 @@
     'error.no-data': 'No deck data found in this file. Please choose the .ofc file you exported from Noji.',
     'error.unreadable': "The deck data couldn't be read. The export may be damaged. Try exporting it from Noji again.",
     'error.format': 'The deck data has an unexpected format.',
+    inappTitle: 'Open this page in your browser',
+    inappText: 'You\'re viewing this inside {app}. Downloads often don\'t work there, so open nojitoanki.com in Safari or Chrome.',
+    inappTextUnknown: 'You\'re viewing this inside an app. Downloads often don\'t work there, so open nojitoanki.com in Safari or Chrome.',
+    inappHowIos: 'Tap the menu (⋯ or the share icon) and choose to open the page in your browser, or copy the link and paste it into Safari.',
+    inappHowAndroid: 'Tap the menu (⋮) and choose to open the page in your browser, or use the button below.',
+    inappCopy: 'Copy link',
+    inappCopied: 'Link copied',
+    inappChrome: 'Open in Chrome',
+    mobileTip: 'Tip: this works best on a computer. There, Anki imports the deck with a double-click, and AnkiWeb syncs it to your phone afterwards.',
   };
 
   // "pt-BR", "pt-PT" and "pt" all get Brazilian Portuguese, "de-AT" gets German, ...

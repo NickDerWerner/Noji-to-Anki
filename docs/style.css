@@ -126,6 +126,13 @@ input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px
 .notice.warn { background: var(--warn-soft); color: var(--warn); }
 .notice.error { background: var(--error-soft); color: var(--error); }
 .notice.ok { background: var(--ok-soft); color: var(--ok); }
+.inapp { margin: 20px 0 0; }
+.inapp-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.inapp-button {
+  font: inherit; font-size: 15px; font-weight: 600; text-decoration: none; cursor: pointer;
+  color: var(--warn); background: var(--surface); border: 1px solid currentColor; border-radius: 8px; padding: 6px 14px;
+}
+.mobile-tip { margin: 0 0 14px; font-size: 15px; color: var(--muted); background: var(--accent-soft); border-radius: 10px; padding: 10px 14px; }
 
 /* Instructions */
 ol.howto { margin: 0; padding-left: 22px; }
