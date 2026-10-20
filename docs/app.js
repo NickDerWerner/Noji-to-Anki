@@ -12,11 +12,14 @@
   const steps = [...progress.querySelectorAll('li')];
   let downloadUrls = [];
 
-  // Load SQLite (needed for the .apkg) in the background right away
-  const sqlReady = initSqlJs({ locateFile: (file) => `vendor/${file}` }).catch((e) => {
-    console.error('Could not load SQLite, falling back to text file + images', e);
-    return null;
-  });
+  // Load SQLite (needed for the .apkg) in the background right away. Without WebAssembly
+  // (e.g. iOS Lockdown Mode) the download falls back to text file + images.
+  const sqlReady = typeof WebAssembly === 'undefined'
+    ? Promise.resolve(null)
+    : initSqlJs({ locateFile: (file) => `vendor/${file}` }).catch((e) => {
+      console.error('Could not load SQLite, falling back to text file + images', e);
+      return null;
+    });
 
   function objectUrl(bytes, type) {
     const url = URL.createObjectURL(new Blob([bytes], { type }));
