@@ -60,7 +60,8 @@
 
     <div id="picker">
       <label class="drop" id="drop">
-        <input type="file" id="file" accept=".ofc,.zip">
+        <!-- No accept=".ofc" filter: iOS greys out .ofc files because it doesn't know the file type -->
+        <input type="file" id="file">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
         <strong data-i18n="drop.title">Drop your <code>.ofc</code> file here</strong>
         <span data-i18n="drop.text">or click to choose it</span>
